@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mapa OOH Pro — Comunas + H6/H8</title>
+  <title>Mapa OOH Pro | Inteligencia Territorial</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
@@ -13,16 +13,29 @@
     :root {
       --bg: #0f172a;
       --card: #111827;
+      --card-2: #0b1220;
       --border: #1f2937;
       --muted: #94a3b8;
+      --text: #e5e7eb;
       --input: #0b1220;
       --blue: #2563eb;
+      --blue-soft: #60a5fa;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --orange: #f97316;
+      --red: #dc2626;
+      --purple: #7e22ce;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     html, body {
       margin: 0;
       height: 100%;
       font-family: Arial, sans-serif;
+      background: #f8fafc;
     }
 
     #app {
@@ -32,11 +45,11 @@
     }
 
     #sidebar {
-      background: var(--bg);
+      background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
       color: white;
       padding: 20px;
-      overflow: auto;
-      box-sizing: border-box;
+      overflow-y: auto;
+      border-right: 1px solid #1e293b;
     }
 
     #map {
@@ -44,43 +57,95 @@
       height: 100%;
     }
 
+    .brand {
+      margin-bottom: 18px;
+    }
+
+    .brand h1 {
+      margin: 0 0 6px;
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
     .card {
-      background: var(--card);
+      background: rgba(17, 24, 39, 0.88);
       border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    .card-title {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat-box {
+      background: var(--card-2);
+      border: 1px solid #1e293b;
       border-radius: 14px;
       padding: 14px;
-      margin-bottom: 14px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
     }
 
     .input,
     .select,
     .button {
       width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
       border: 1px solid #334155;
       background: var(--input);
       color: white;
       margin-top: 6px;
-      margin-bottom: 10px;
-      box-sizing: border-box;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .input::placeholder {
+      color: #64748b;
     }
 
     .button {
-      background: var(--blue);
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
       border: none;
       cursor: pointer;
       font-weight: bold;
+      transition: 0.2s ease;
     }
 
     .button:hover {
-      filter: brightness(1.08);
-    }
-
-    .stat {
-      font-size: 28px;
-      font-weight: bold;
-      margin-top: 5px;
+      transform: translateY(-1px);
+      filter: brightness(1.05);
     }
 
     .muted {
@@ -88,13 +153,36 @@
       font-size: 13px;
     }
 
+    .help-list {
+      padding-left: 18px;
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .help-list li {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      font-size: 12px;
+      margin: 4px 6px 0 0;
+    }
+
     .legend {
-      background: white;
-      padding: 10px 12px;
-      border-radius: 12px;
-      line-height: 1.6;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.96);
+      padding: 12px 14px;
+      border-radius: 14px;
+      line-height: 1.7;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
       font-size: 13px;
+      border: 1px solid #e5e7eb;
     }
 
     .dot {
@@ -107,28 +195,38 @@
 
     .leaflet-popup-content {
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.6;
+      min-width: 200px;
     }
 
     .leaflet-control-layers {
-      border-radius: 12px !important;
+      border-radius: 14px !important;
       overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+      box-shadow: 0 12px 28px rgba(0,0,0,.15) !important;
+      border: 1px solid #e5e7eb !important;
     }
 
     .leaflet-control-layers-expanded {
       padding: 12px 14px !important;
-      min-width: 230px;
+      min-width: 240px;
     }
 
-    @media (max-width: 900px) {
+    .leaflet-container {
+      background: #eef2f7;
+    }
+
+    @media (max-width: 980px) {
       #app {
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr;
       }
 
       #sidebar {
-        max-height: 42vh;
+        max-height: 44vh;
+      }
+
+      .brand h1 {
+        font-size: 28px;
       }
     }
   </style>
@@ -136,18 +234,28 @@
 <body>
   <div id="app">
     <aside id="sidebar">
-      <h1 style="margin: 0 0 8px;">Mapa OOH Pro</h1>
-      <p class="muted">Comunas, hexágonos H6/H8, soportes y filtros comerciales.</p>
-
-      <div class="card">
-        <div class="muted">Soportes visibles</div>
-        <div class="stat" id="statSoportes">0</div>
-
-        <div class="muted" style="margin-top: 10px;">Hexágonos visibles</div>
-        <div class="stat" id="statHex">0</div>
+      <div class="brand">
+        <h1>Mapa OOH Pro</h1>
+        <p>Inteligencia territorial con comunas, H6/H8, soportes y lectura comercial geoespacial.</p>
       </div>
 
       <div class="card">
+        <div class="card-title">Resumen</div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Soportes visibles</div>
+            <div class="stat-value" id="statSoportes">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Hex visibles</div>
+            <div class="stat-value" id="statHex">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Filtros</div>
+
         <label class="muted">Buscar soporte</label>
         <input id="searchInput" class="input" placeholder="Ej: Metro, Parque Arauco..." />
 
@@ -173,19 +281,28 @@
       </div>
 
       <div class="card">
-        <div class="muted">Cómo leer el mapa</div>
-        <ul style="padding-left: 18px; line-height: 1.7;">
+        <div class="card-title">Cómo leer el mapa</div>
+        <ul class="help-list">
           <li><b>Comunas:</b> límite territorial</li>
-          <li><b>H6:</b> visión macro / comercial</li>
-          <li><b>H8:</b> visión táctica / detalle</li>
-          <li><b>Puntos:</b> soportes individuales</li>
-          <li><b>Colores:</b> densidad de soportes</li>
+          <li><b>H6:</b> lectura macro / comercial</li>
+          <li><b>H8:</b> lectura táctica / detalle</li>
+          <li><b>Soportes:</b> inventario puntual</li>
+          <li><b>Color:</b> concentración de soportes</li>
         </ul>
       </div>
 
       <div class="card">
-        <div class="muted">Archivos requeridos</div>
-        <ul style="padding-left: 18px; line-height: 1.7;">
+        <div class="card-title">Capas del producto</div>
+        <span class="pill">Comunas</span>
+        <span class="pill">Comuna seleccionada</span>
+        <span class="pill">Malla H6</span>
+        <span class="pill">Malla H8</span>
+        <span class="pill">Soportes</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Archivos requeridos</div>
+        <ul class="help-list">
           <li><code>data/soportes_h3.json</code></li>
           <li><code>data/comunas.geojson</code></li>
         </ul>
@@ -207,8 +324,13 @@
       maxZoom: 20
     }).addTo(map);
 
-    const h6Layer = L.layerGroup().addTo(map);
-    const h8Layer = L.layerGroup().addTo(map);
+    // Layers
+    const h6BaseLayer = L.layerGroup().addTo(map);
+    const h6DataLayer = L.layerGroup().addTo(map);
+
+    const h8BaseLayer = L.layerGroup();
+    const h8DataLayer = L.layerGroup();
+
     const pointsLayer = L.markerClusterGroup({
       disableClusteringAtZoom: 15,
       spiderfyOnMaxZoom: true,
@@ -224,14 +346,34 @@
     let currentData = [];
 
     function getColor(count) {
-      return count > 300 ? "#dc2626"
-        : count > 100 ? "#f97316"
-        : count > 30 ? "#eab308"
-        : "#22c55e";
+      return count > 300 ? "#7e22ce"
+        : count > 100 ? "#6366f1"
+        : count > 30 ? "#94a3b8"
+        : "#dbeafe";
     }
 
     function polygonFromH3(cell) {
       return h3.cellToBoundary(cell, true).map(([lat, lng]) => [lat, lng]);
+    }
+
+    function getCountMap(data, key) {
+      const mapCount = {};
+      data.forEach(item => {
+        const k = item[key];
+        mapCount[k] = (mapCount[k] || 0) + 1;
+      });
+      return mapCount;
+    }
+
+    function getVisiblePolygon() {
+      const bounds = map.getBounds();
+      return [[
+        [bounds.getSouth(), bounds.getWest()],
+        [bounds.getSouth(), bounds.getEast()],
+        [bounds.getNorth(), bounds.getEast()],
+        [bounds.getNorth(), bounds.getWest()],
+        [bounds.getSouth(), bounds.getWest()]
+      ]];
     }
 
     async function loadComunas() {
@@ -239,15 +381,15 @@
         const res = await fetch("./data/comunas.geojson");
         if (!res.ok) throw new Error("No se pudo cargar comunas.geojson");
 
-        const geo = await res.json();
-        geoComunasData = geo;
+        geoComunasData = await res.json();
 
-        comunasLayer = L.geoJSON(geo, {
+        comunasLayer = L.geoJSON(geoComunasData, {
           style: {
-            color: "#64748b",
-            weight: 1.5,
-            fillOpacity: 0,
-            opacity: 0.9
+            color: "#475569",
+            weight: 2.2,
+            fillColor: "#94a3b8",
+            fillOpacity: 0.03,
+            opacity: 1
           },
           onEachFeature: function (feature, layer) {
             const nombre =
@@ -268,7 +410,7 @@
               }
 
               resaltarComuna(nombre);
-              map.fitBounds(layer.getBounds());
+              map.fitBounds(layer.getBounds(), { padding: [20, 20] });
             });
           }
         }).addTo(map);
@@ -301,9 +443,9 @@
         },
         style: {
           color: "#0f172a",
-          weight: 3,
+          weight: 4,
           fillColor: "#60a5fa",
-          fillOpacity: 0.12,
+          fillOpacity: 0.08,
           opacity: 1
         }
       }).addTo(map);
@@ -358,45 +500,45 @@
       });
     }
 
-    function aggregate(data, key) {
-      const mapData = new Map();
+    function renderGrid(baseLayer, dataLayer, resolution, label) {
+      baseLayer.clearLayers();
+      dataLayer.clearLayers();
 
-      data.forEach(item => {
-        const k = item[key];
-        if (!mapData.has(k)) {
-          mapData.set(k, { cell: k, count: 0, items: [] });
-        }
-        const obj = mapData.get(k);
-        obj.count++;
-        obj.items.push(item);
-      });
+      const polygon = getVisiblePolygon();
+      const cells = h3.polygonToCells(polygon, resolution);
 
-      return [...mapData.values()];
-    }
+      const key = label.toLowerCase();
+      const countMap = getCountMap(currentData, key);
 
-    function renderHex(layer, groups, label) {
-      layer.clearLayers();
+      cells.forEach(cell => {
+        // Base grid (malla completa)
+        L.polygon(polygonFromH3(cell), {
+          color: label === "H6" ? "#94a3b8" : "#cbd5e1",
+          weight: label === "H6" ? 1.6 : 1,
+          fillOpacity: 0,
+          opacity: label === "H6" ? 0.9 : 0.75
+        }).addTo(baseLayer);
 
-      groups.forEach(g => {
-        const isH6 = label === "H6";
+        const count = countMap[cell] || 0;
 
-        L.polygon(polygonFromH3(g.cell), {
-          color: isH6 ? "#2563eb" : "#111827",
-          fillColor: getColor(g.count),
-          fillOpacity: isH6 ? 0.10 : 0.20,
-          weight: isH6 ? 2.8 : 1.4,
-          dashArray: isH6 ? "8,6" : "2,4",
-          opacity: isH6 ? 1 : 0.9
-        })
+        if (count > 0) {
+          L.polygon(polygonFromH3(cell), {
+            color: label === "H6" ? "#1e3a8a" : "#111827",
+            weight: label === "H6" ? 2.2 : 1.3,
+            fillColor: getColor(count),
+            fillOpacity: label === "H6" ? 0.16 : 0.14,
+            opacity: 1
+          })
           .bindPopup(`
-            <b>${label}</b>: ${g.cell}<br>
-            <b>Soportes</b>: ${g.count}
+            <b>${label}</b>: ${cell}<br>
+            <b>Soportes:</b> ${count}
           `)
-          .bindTooltip(`${label} • ${g.count} soportes`, {
+          .bindTooltip(`${label} • ${count} soportes`, {
             sticky: true,
             direction: "top"
           })
-          .addTo(layer);
+          .addTo(dataLayer);
+        }
       });
     }
 
@@ -421,17 +563,17 @@
           radius: 5,
           color: color,
           fillColor: color,
-          fillOpacity: 0.85,
+          fillOpacity: 0.9,
           weight: 1
         })
-          .bindPopup(`
-            <b>${p.name || "Soporte"}</b><br>
-            <b>Categoría:</b> ${p.categoria}<br>
-            <b>Comuna:</b> ${p.comuna}<br>
-            <b>H6:</b> ${p.h6}<br>
-            <b>H8:</b> ${p.h8}
-          `)
-          .addTo(pointsLayer);
+        .bindPopup(`
+          <b>${p.name || "Soporte"}</b><br>
+          <b>Categoría:</b> ${p.categoria}<br>
+          <b>Comuna:</b> ${p.comuna}<br>
+          <b>H6:</b> ${p.h6}<br>
+          <b>H8:</b> ${p.h8}
+        `)
+        .addTo(pointsLayer);
       });
     }
 
@@ -439,25 +581,36 @@
       const mode = document.getElementById("resolutionMode").value;
       const z = map.getZoom();
 
-      map.removeLayer(h6Layer);
-      map.removeLayer(h8Layer);
-      map.removeLayer(pointsLayer);
+      [
+        h6BaseLayer, h6DataLayer,
+        h8BaseLayer, h8DataLayer,
+        pointsLayer
+      ].forEach(layer => {
+        if (map.hasLayer(layer)) map.removeLayer(layer);
+      });
 
       if (mode === "h6") {
-        map.addLayer(h6Layer);
+        map.addLayer(h6BaseLayer);
+        map.addLayer(h6DataLayer);
       } else if (mode === "h8") {
-        map.addLayer(h8Layer);
+        map.addLayer(h8BaseLayer);
+        map.addLayer(h8DataLayer);
       } else if (mode === "points") {
         map.addLayer(pointsLayer);
-      } else if (mode === "auto") {
+      } else {
         if (z < 12) {
-          map.addLayer(h6Layer);
+          map.addLayer(h6BaseLayer);
+          map.addLayer(h6DataLayer);
         } else if (z >= 12 && z < 14) {
-          map.addLayer(h6Layer);
-          map.addLayer(h8Layer);
+          map.addLayer(h6BaseLayer);
+          map.addLayer(h6DataLayer);
+          map.addLayer(h8BaseLayer);
+          map.addLayer(h8DataLayer);
         } else {
-          map.addLayer(h6Layer);
-          map.addLayer(h8Layer);
+          map.addLayer(h6BaseLayer);
+          map.addLayer(h6DataLayer);
+          map.addLayer(h8BaseLayer);
+          map.addLayer(h8DataLayer);
           map.addLayer(pointsLayer);
         }
       }
@@ -468,26 +621,30 @@
     function updateStats() {
       document.getElementById("statSoportes").textContent = currentData.length;
 
+      const polygon = getVisiblePolygon();
       const mode = document.getElementById("resolutionMode").value;
       const z = map.getZoom();
+
       let hexCount = 0;
 
       if (mode === "h6") {
-        hexCount = aggregate(currentData, "h6").length;
+        hexCount = h3.polygonToCells(polygon, 6).length;
       } else if (mode === "h8") {
-        hexCount = aggregate(currentData, "h8").length;
+        hexCount = h3.polygonToCells(polygon, 8).length;
       } else if (mode === "auto" && z < 12) {
-        hexCount = aggregate(currentData, "h6").length;
-      } else if (mode === "auto" && z >= 12) {
-        hexCount = aggregate(currentData, "h6").length + aggregate(currentData, "h8").length;
+        hexCount = h3.polygonToCells(polygon, 6).length;
+      } else if (mode === "auto" && z >= 12 && z < 14) {
+        hexCount = h3.polygonToCells(polygon, 6).length + h3.polygonToCells(polygon, 8).length;
+      } else if (mode === "auto" && z >= 14) {
+        hexCount = h3.polygonToCells(polygon, 6).length + h3.polygonToCells(polygon, 8).length;
       }
 
       document.getElementById("statHex").textContent = hexCount;
     }
 
     function renderAll() {
-      renderHex(h6Layer, aggregate(currentData, "h6"), "H6");
-      renderHex(h8Layer, aggregate(currentData, "h8"), "H8");
+      renderGrid(h6BaseLayer, h6DataLayer, 6, "H6");
+      renderGrid(h8BaseLayer, h8DataLayer, 8, "H8");
       renderPoints(currentData);
       applyZoomMode();
     }
@@ -515,8 +672,11 @@
       const overlays = {};
       if (comunasLayer) overlays["🏙 Comunas"] = comunasLayer;
       if (comunaSeleccionadaLayer) overlays["⭐ Comuna seleccionada"] = comunaSeleccionadaLayer;
-      overlays["🔷 Hexágonos H6"] = h6Layer;
-      overlays["🔹 Hexágonos H8"] = h8Layer;
+
+      overlays["🔷 Malla base H6"] = h6BaseLayer;
+      overlays["🟦 H6 con datos"] = h6DataLayer;
+      overlays["🔹 Malla base H8"] = h8BaseLayer;
+      overlays["🟪 H8 con datos"] = h8DataLayer;
       overlays["📍 Soportes"] = pointsLayer;
 
       layerControl = L.control.layers({}, overlays, {
@@ -533,7 +693,7 @@
 
       if (comunaSeleccionadaLayer) {
         try {
-          map.fitBounds(comunaSeleccionadaLayer.getBounds());
+          map.fitBounds(comunaSeleccionadaLayer.getBounds(), { padding: [20, 20] });
         } catch (e) {}
       }
 
@@ -541,7 +701,7 @@
     });
 
     document.getElementById("categoriaFilter").addEventListener("change", filterData);
-    document.getElementById("resolutionMode").addEventListener("change", applyZoomMode);
+    document.getElementById("resolutionMode").addEventListener("change", renderAll);
 
     document.getElementById("resetBtn").addEventListener("click", () => {
       map.setView([-33.45, -70.65], 11);
@@ -555,7 +715,8 @@
       initLayerControl();
     });
 
-    map.on("zoomend", applyZoomMode);
+    map.on("zoomend", renderAll);
+    map.on("moveend", renderAll);
 
     const legend = L.control({ position: "bottomright" });
 
@@ -563,14 +724,15 @@
       const div = L.DomUtil.create("div", "legend");
       div.innerHTML = `
         <b>Densidad</b><br>
-        <span class="dot" style="background:#22c55e"></span>Baja<br>
-        <span class="dot" style="background:#eab308"></span>Media<br>
-        <span class="dot" style="background:#f97316"></span>Alta<br>
-        <span class="dot" style="background:#dc2626"></span>Muy alta<br><br>
+        <span class="dot" style="background:#dbeafe"></span>Baja<br>
+        <span class="dot" style="background:#94a3b8"></span>Media<br>
+        <span class="dot" style="background:#6366f1"></span>Alta<br>
+        <span class="dot" style="background:#7e22ce"></span>Muy alta<br><br>
 
-        <b>Capas</b><br>
+        <b>Lectura territorial</b><br>
         🔷 H6 = macrozona<br>
         🔹 H8 = detalle<br>
+        🏙 Comunas = límites<br>
         ⭐ Comuna seleccionada = resaltada
       `;
       return div;
