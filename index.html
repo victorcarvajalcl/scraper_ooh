@@ -3,160 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mapa OOH Pro | Inteligencia Territorial</title>
+  <title>Mapa OOH Pro | H6 H8 Comunas</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
   <style>
-    :root {
-      --bg: #0f172a;
-      --card: #111827;
-      --card-2: #0b1220;
-      --border: #1f2937;
-      --muted: #94a3b8;
-      --text: #e5e7eb;
-      --input: #0b1220;
-      --blue: #2563eb;
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --card2:#0b1220;
+      --border:#1f2937;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --blue:#2563eb;
     }
-
-    * { box-sizing: border-box; }
-    html, body { margin: 0; height: 100%; font-family: Arial, sans-serif; background: #f8fafc; }
-
-    #app {
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      height: 100%;
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#f8fafc}
+    #app{display:grid;grid-template-columns:340px 1fr;height:100%}
+    #sidebar{
+      background:linear-gradient(180deg,#0f172a 0%,#111827 100%);
+      color:#fff;padding:20px;overflow-y:auto;border-right:1px solid #1e293b
     }
-
-    #sidebar {
-      background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
-      color: white;
-      padding: 20px;
-      overflow-y: auto;
-      border-right: 1px solid #1e293b;
+    #map{width:100%;height:100%}
+    .brand h1{margin:0 0 8px;font-size:30px}
+    .brand p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+    .card{
+      background:rgba(17,24,39,.92);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin:16px 0;
     }
-
-    #map { width: 100%; height: 100%; }
-
-    .brand { margin-bottom: 18px; }
-    .brand h1 { margin: 0 0 6px; font-size: 34px; line-height: 1; letter-spacing: -1px; }
-    .brand p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
-
-    .card {
-      background: rgba(17, 24, 39, 0.88);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 16px;
-      backdrop-filter: blur(8px);
+    .card-title{
+      font-size:13px;color:var(--muted);margin-bottom:10px;
+      text-transform:uppercase;letter-spacing:.08em
     }
-
-    .card-title {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .stat-box{
+      background:var(--card2);
+      border:1px solid #1e293b;
+      border-radius:14px;
+      padding:14px
     }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    .stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .stat-value{font-size:28px;font-weight:bold}
+    .input,.select,.button{
+      width:100%;padding:12px 14px;border-radius:12px;
+      border:1px solid #334155;background:#0b1220;color:#fff;
+      margin-top:6px;margin-bottom:12px;font-size:14px
     }
-
-    .stat-box {
-      background: var(--card-2);
-      border: 1px solid #1e293b;
-      border-radius: 14px;
-      padding: 14px;
+    .button{
+      background:linear-gradient(135deg,#2563eb,#1d4ed8);
+      border:none;cursor:pointer;font-weight:bold
     }
-
-    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    .stat-value { font-size: 28px; font-weight: bold; color: white; }
-
-    .input, .select, .button {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      background: var(--input);
-      color: white;
-      margin-top: 6px;
-      margin-bottom: 12px;
-      font-size: 14px;
+    .button:hover{filter:brightness(1.05)}
+    .muted{color:var(--muted);font-size:13px}
+    .help-list{padding-left:18px;line-height:1.8;margin:0}
+    .help-list li{color:var(--text);font-size:14px}
+    .chip-wrap{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{
+      padding:8px 10px;border-radius:999px;
+      background:#172033;border:1px solid #243146;
+      color:#cbd5e1;font-size:13px
     }
-
-    .input::placeholder { color: #64748b; }
-
-    .button {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.2s ease;
+    .legend{
+      background:rgba(255,255,255,.96);
+      padding:12px 14px;border-radius:14px;
+      line-height:1.7;box-shadow:0 12px 28px rgba(0,0,0,.16);
+      font-size:13px;border:1px solid #e5e7eb
     }
-
-    .button:hover { transform: translateY(-1px); filter: brightness(1.05); }
-
-    .muted { color: var(--muted); font-size: 13px; }
-
-    .help-list {
-      padding-left: 18px;
-      line-height: 1.8;
-      margin: 0;
+    .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
+    .leaflet-popup-content{font-size:13px;line-height:1.6;min-width:240px}
+    .leaflet-control-layers{
+      border-radius:14px !important;overflow:hidden;
+      box-shadow:0 12px 28px rgba(0,0,0,.15) !important;
+      border:1px solid #e5e7eb !important
     }
-
-    .help-list li { color: var(--text); font-size: 14px; }
-
-    .legend {
-      background: rgba(255, 255, 255, 0.96);
-      padding: 12px 14px;
-      border-radius: 14px;
-      line-height: 1.7;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
-      font-size: 13px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .dot {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-right: 8px;
-    }
-
-    .leaflet-popup-content {
-      font-size: 13px;
-      line-height: 1.6;
-      min-width: 220px;
-    }
-
-    .leaflet-control-layers {
-      border-radius: 14px !important;
-      overflow: hidden;
-      box-shadow: 0 12px 28px rgba(0,0,0,.15) !important;
-      border: 1px solid #e5e7eb !important;
-    }
-
-    .leaflet-control-layers-expanded {
-      padding: 12px 14px !important;
-      min-width: 240px;
-    }
-
-    .leaflet-container { background: #eef2f7; }
-
-    @media (max-width: 980px) {
-      #app {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-      }
-
-      #sidebar { max-height: 44vh; }
-      .brand h1 { font-size: 28px; }
+    .leaflet-control-layers-expanded{padding:12px 14px !important;min-width:240px}
+    .leaflet-container{background:#eef2f7}
+    @media (max-width:980px){
+      #app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+      #sidebar{max-height:46vh}
     }
   </style>
 </head>
@@ -165,7 +94,7 @@
     <aside id="sidebar">
       <div class="brand">
         <h1>Mapa OOH Pro</h1>
-        <p>Inteligencia territorial con comunas, H6/H8, soportes y lectura comercial geoespacial.</p>
+        <p>Comunas, malla H6/H8, soportes y lectura territorial comercial.</p>
       </div>
 
       <div class="card">
@@ -176,8 +105,16 @@
             <div class="stat-value" id="statSoportes">0</div>
           </div>
           <div class="stat-box">
-            <div class="stat-label">Hex visibles</div>
+            <div class="stat-label">Hex activos</div>
             <div class="stat-value" id="statHex">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">H6 activos</div>
+            <div class="stat-value" id="statH6">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">H8 activos</div>
+            <div class="stat-value" id="statH8">0</div>
           </div>
         </div>
       </div>
@@ -210,6 +147,17 @@
       </div>
 
       <div class="card">
+        <div class="card-title">Capas del producto</div>
+        <div class="chip-wrap">
+          <div class="chip">Comunas</div>
+          <div class="chip">Comuna seleccionada</div>
+          <div class="chip">Malla H6</div>
+          <div class="chip">Malla H8</div>
+          <div class="chip">Soportes</div>
+        </div>
+      </div>
+
+      <div class="card">
         <div class="card-title">Cómo leer el mapa</div>
         <ul class="help-list">
           <li><b>Comunas:</b> límite territorial</li>
@@ -217,6 +165,16 @@
           <li><b>H8:</b> lectura táctica / detalle</li>
           <li><b>Soportes:</b> inventario puntual</li>
           <li><b>Color:</b> concentración de soportes</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Archivos requeridos</div>
+        <ul class="help-list">
+          <li><code>data/soportes_h3.json</code></li>
+          <li><code>data/resumen_h6.csv</code></li>
+          <li><code>data/resumen_h8.csv</code></li>
+          <li><code>data/comunas.geojson</code> (opcional pero recomendado)</li>
         </ul>
       </div>
     </aside>
@@ -229,16 +187,24 @@
   <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
 
   <script>
-    const map = L.map("map").setView([-33.45, -70.65], 11);
+    // =========================
+    // MAPA
+    // =========================
+    const map = L.map("map", { zoomControl: true }).setView([-33.45, -70.65], 11);
 
     L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
       attribution: "&copy; OpenStreetMap &copy; CARTO",
       maxZoom: 20
     }).addTo(map);
 
-    // Layers
-    const h6Layer = L.layerGroup().addTo(map);
-    const h8Layer = L.layerGroup();
+    // =========================
+    // CAPAS
+    // =========================
+    const h6BaseLayer = L.layerGroup().addTo(map);
+    const h6DataLayer = L.layerGroup().addTo(map);
+    const h8BaseLayer = L.layerGroup();
+    const h8DataLayer = L.layerGroup();
+
     const pointsLayer = L.markerClusterGroup({
       disableClusteringAtZoom: 15,
       spiderfyOnMaxZoom: true,
@@ -252,9 +218,14 @@
 
     let allData = [];
     let currentData = [];
-    let h6Resumen = [];
-    let h8Resumen = [];
+    let h6ResumenOriginal = [];
+    let h8ResumenOriginal = [];
+    let h6ResumenFiltrado = [];
+    let h8ResumenFiltrado = [];
 
+    // =========================
+    // HELPERS
+    // =========================
     function getColor(count) {
       return count > 300 ? "#7e22ce"
         : count > 100 ? "#6366f1"
@@ -264,14 +235,17 @@
     }
 
     function polygonFromH3(cell) {
-      return h3.cellToBoundary(cell, true).map(([lat, lng]) => [lat, lng]);
+      try {
+        return h3.cellToBoundary(cell, true).map(([lat, lng]) => [lat, lng]);
+      } catch (e) {
+        return null;
+      }
     }
 
     async function loadCSV(path) {
       const res = await fetch(path);
       if (!res.ok) throw new Error("No se pudo cargar " + path);
       const text = await res.text();
-
       const lines = text.trim().split("\n");
       const headers = lines[0].split(",");
 
@@ -283,19 +257,21 @@
       });
     }
 
+    // =========================
+    // COMUNAS
+    // =========================
     async function loadComunas() {
       try {
         const res = await fetch("./data/comunas.geojson");
         if (!res.ok) throw new Error("No existe comunas.geojson");
-
         geoComunasData = await res.json();
 
         comunasLayer = L.geoJSON(geoComunasData, {
           style: {
             color: "#475569",
-            weight: 2.2,
+            weight: 2.4,
             fillColor: "#94a3b8",
-            fillOpacity: 0.03,
+            fillOpacity: 0.02,
             opacity: 1
           },
           onEachFeature: function (feature, layer) {
@@ -322,6 +298,7 @@
           }
         }).addTo(map);
 
+        initLayerControl();
       } catch (err) {
         console.warn("Comunas no cargadas:", err.message);
       }
@@ -335,7 +312,10 @@
         comunaSeleccionadaLayer = null;
       }
 
-      if (!nombreBuscado) return;
+      if (!nombreBuscado) {
+        initLayerControl();
+        return;
+      }
 
       comunaSeleccionadaLayer = L.geoJSON(geoComunasData, {
         filter: function (feature) {
@@ -344,7 +324,6 @@
             feature.properties?.NOM_COMUNA ||
             feature.properties?.Comuna ||
             "";
-
           return nombre.toLowerCase() === nombreBuscado.toLowerCase();
         },
         style: {
@@ -359,6 +338,9 @@
       initLayerControl();
     }
 
+    // =========================
+    // DATA
+    // =========================
     async function loadData() {
       const [jsonData, csvH6, csvH8] = await Promise.all([
         fetch("./data/soportes_h3.json").then(r => r.json()),
@@ -375,8 +357,10 @@
       }));
 
       currentData = [...allData];
-      h6Resumen = csvH6;
-      h8Resumen = csvH8;
+      h6ResumenOriginal = csvH6;
+      h8ResumenOriginal = csvH8;
+      h6ResumenFiltrado = [...h6ResumenOriginal];
+      h8ResumenFiltrado = [...h8ResumenOriginal];
 
       buildFilters();
       renderAll();
@@ -408,35 +392,56 @@
       });
     }
 
-    function renderHexLayer(layer, data, keyName, label, strokeColor, weight, fillOpacity) {
+    // =========================
+    // RENDER HEX
+    // =========================
+    function renderHexLayer(layer, data, keyName, label, strokeColor, weight, fillOpacity, dashed=false) {
       layer.clearLayers();
 
       data.forEach(row => {
         const cell = row[keyName];
         const count = Number(row.soportes || 0);
-
         if (!cell) return;
 
-        L.polygon(polygonFromH3(cell), {
+        const coords = polygonFromH3(cell);
+        if (!coords) return;
+
+        L.polygon(coords, {
           color: strokeColor,
           weight: weight,
           opacity: 1,
-          fillColor: getColor(count),
-          fillOpacity: fillOpacity,
+          fillColor: count > 0 ? getColor(count) : "#ffffff",
+          fillOpacity: count > 0 ? fillOpacity : 0.01,
+          dashArray: dashed ? "4 4" : null,
           lineJoin: "round"
         })
         .bindPopup(`
           <b>${label}</b>: ${cell}<br>
           <b>Soportes:</b> ${count}
         `)
-        .bindTooltip(`${label} • ${count} soportes`, {
+        .bindTooltip(`
+          <b>${label}</b><br>
+          ${cell}<br>
+          ${count} soportes
+        `, {
           sticky: true,
-          direction: "top"
+          direction: "top",
+          opacity: 0.95
         })
         .addTo(layer);
       });
     }
 
+    function buildBaseGridFromSummary(summary, keyName) {
+      return summary.map(row => ({
+        [keyName]: row[keyName],
+        soportes: 0
+      }));
+    }
+
+    // =========================
+    // RENDER PUNTOS
+    // =========================
     function renderPoints(data) {
       pointsLayer.clearLayers();
 
@@ -455,46 +460,65 @@
         const color = colorMap[p.categoria] || "#0f172a";
 
         L.circleMarker([p.lat, p.lng], {
-          radius: 5,
+          radius: 4,
           color: color,
           fillColor: color,
           fillOpacity: 0.9,
           weight: 1
         })
         .bindPopup(`
-          <b>${p.name || "Soporte"}</b><br>
-          <b>Categoría:</b> ${p.categoria}<br>
-          <b>Comuna:</b> ${p.comuna}<br>
-          <b>H6:</b> ${p.h6}<br>
-          <b>H8:</b> ${p.h8}
+          <div style="font-family:Arial,sans-serif; line-height:1.6;">
+            <div style="font-size:15px; font-weight:700; margin-bottom:8px;">
+              ${p.name || "Soporte"}
+            </div>
+            <div><b>Categoría:</b> ${p.categoria}</div>
+            <div><b>Comuna:</b> ${p.comuna}</div>
+            <div><b>H6:</b> ${p.h6}</div>
+            <div><b>H8:</b> ${p.h8}</div>
+            ${p.url ? `<div style="margin-top:10px;">
+              <a href="${p.url}" target="_blank" style="color:#2563eb; font-weight:600; text-decoration:none;">
+                Ver soporte original ↗
+              </a>
+            </div>` : ""}
+          </div>
         `)
         .addTo(pointsLayer);
       });
     }
 
+    // =========================
+    // VISTA / ZOOM
+    // =========================
     function applyZoomMode() {
       const mode = document.getElementById("resolutionMode").value;
       const z = map.getZoom();
 
-      [h6Layer, h8Layer, pointsLayer].forEach(layer => {
+      [h6BaseLayer, h6DataLayer, h8BaseLayer, h8DataLayer, pointsLayer].forEach(layer => {
         if (map.hasLayer(layer)) map.removeLayer(layer);
       });
 
       if (mode === "h6") {
-        map.addLayer(h6Layer);
+        map.addLayer(h6BaseLayer);
+        map.addLayer(h6DataLayer);
       } else if (mode === "h8") {
-        map.addLayer(h8Layer);
+        map.addLayer(h8BaseLayer);
+        map.addLayer(h8DataLayer);
       } else if (mode === "points") {
         map.addLayer(pointsLayer);
       } else {
         if (z < 12) {
-          map.addLayer(h6Layer);
+          map.addLayer(h6BaseLayer);
+          map.addLayer(h6DataLayer);
         } else if (z >= 12 && z < 14) {
-          map.addLayer(h6Layer);
-          map.addLayer(h8Layer);
+          map.addLayer(h6BaseLayer);
+          map.addLayer(h6DataLayer);
+          map.addLayer(h8BaseLayer);
+          map.addLayer(h8DataLayer);
         } else {
-          map.addLayer(h6Layer);
-          map.addLayer(h8Layer);
+          map.addLayer(h6BaseLayer);
+          map.addLayer(h6DataLayer);
+          map.addLayer(h8BaseLayer);
+          map.addLayer(h8DataLayer);
           map.addLayer(pointsLayer);
         }
       }
@@ -504,31 +528,65 @@
 
     function updateStats() {
       document.getElementById("statSoportes").textContent = currentData.length;
-
-      const mode = document.getElementById("resolutionMode").value;
-      const z = map.getZoom();
-      let hexCount = 0;
-
-      if (mode === "h6") {
-        hexCount = h6Resumen.length;
-      } else if (mode === "h8") {
-        hexCount = h8Resumen.length;
-      } else if (mode === "auto" && z < 12) {
-        hexCount = h6Resumen.length;
-      } else if (mode === "auto" && z >= 12) {
-        hexCount = h6Resumen.length + h8Resumen.length;
-      }
-
-      document.getElementById("statHex").textContent = hexCount;
+      document.getElementById("statHex").textContent = h6ResumenFiltrado.length + h8ResumenFiltrado.length;
+      document.getElementById("statH6").textContent = h6ResumenFiltrado.length;
+      document.getElementById("statH8").textContent = h8ResumenFiltrado.length;
     }
 
     function renderAll() {
-      renderHexLayer(h6Layer, h6Resumen, "h6", "H6", "#1e3a8a", 2.2, 0.16);
-      renderHexLayer(h8Layer, h8Resumen, "h8", "H8", "#111827", 1.2, 0.12);
+      // Base grids = solo bordes / malla
+      renderHexLayer(
+        h6BaseLayer,
+        buildBaseGridFromSummary(h6ResumenOriginal, "h6"),
+        "h6",
+        "Malla base H6",
+        "#93c5fd",
+        1.4,
+        0.01,
+        true
+      );
+
+      renderHexLayer(
+        h8BaseLayer,
+        buildBaseGridFromSummary(h8ResumenOriginal, "h8"),
+        "h8",
+        "Malla base H8",
+        "#c4b5fd",
+        1.0,
+        0.01,
+        true
+      );
+
+      // Data grids = hex con densidad
+      renderHexLayer(
+        h6DataLayer,
+        h6ResumenFiltrado,
+        "h6",
+        "H6 con datos",
+        "#2563eb",
+        2.8,
+        0.12,
+        false
+      );
+
+      renderHexLayer(
+        h8DataLayer,
+        h8ResumenFiltrado,
+        "h8",
+        "H8 con datos",
+        "#0f172a",
+        1.4,
+        0.08,
+        false
+      );
+
       renderPoints(currentData);
       applyZoomMode();
     }
 
+    // =========================
+    // FILTROS
+    // =========================
     function filterData() {
       const q = document.getElementById("searchInput").value.toLowerCase().trim();
       const comuna = document.getElementById("comunaFilter").value;
@@ -541,7 +599,6 @@
         return okText && okComuna && okCategoria;
       });
 
-      // recalcular resumen SOLO para lo filtrado
       const h6Map = {};
       const h8Map = {};
 
@@ -550,20 +607,26 @@
         h8Map[item.h8] = (h8Map[item.h8] || 0) + 1;
       });
 
-      h6Resumen = Object.entries(h6Map).map(([h6, soportes]) => ({ h6, soportes }));
-      h8Resumen = Object.entries(h8Map).map(([h8, soportes]) => ({ h8, soportes }));
+      h6ResumenFiltrado = Object.entries(h6Map).map(([h6, soportes]) => ({ h6, soportes }));
+      h8ResumenFiltrado = Object.entries(h8Map).map(([h8, soportes]) => ({ h8, soportes }));
 
       renderAll();
     }
 
+    // =========================
+    // CONTROL DE CAPAS
+    // =========================
     function initLayerControl() {
       if (layerControl) map.removeControl(layerControl);
 
       const overlays = {};
       if (comunasLayer) overlays["🏙 Comunas"] = comunasLayer;
       if (comunaSeleccionadaLayer) overlays["⭐ Comuna seleccionada"] = comunaSeleccionadaLayer;
-      overlays["🔷 H6"] = h6Layer;
-      overlays["🔹 H8"] = h8Layer;
+
+      overlays["🔷 Malla base H6"] = h6BaseLayer;
+      overlays["🔵 H6 con datos"] = h6DataLayer;
+      overlays["🔹 Malla base H8"] = h8BaseLayer;
+      overlays["🟣 H8 con datos"] = h8DataLayer;
       overlays["📍 Soportes"] = pointsLayer;
 
       layerControl = L.control.layers({}, overlays, {
@@ -571,6 +634,9 @@
       }).addTo(map);
     }
 
+    // =========================
+    // EVENTOS
+    // =========================
     document.getElementById("searchInput").addEventListener("input", filterData);
 
     document.getElementById("comunaFilter").addEventListener("change", function () {
@@ -587,6 +653,7 @@
 
     document.getElementById("categoriaFilter").addEventListener("change", filterData);
     document.getElementById("resolutionMode").addEventListener("change", applyZoomMode);
+    map.on("zoomend", applyZoomMode);
 
     document.getElementById("resetBtn").addEventListener("click", () => {
       map.setView([-33.45, -70.65], 11);
@@ -594,23 +661,18 @@
       document.getElementById("comunaFilter").value = "";
       document.getElementById("categoriaFilter").value = "";
       document.getElementById("resolutionMode").value = "auto";
+
       currentData = [...allData];
-
-      // restaurar resumen original desde allData
-      const h6Map = {};
-      const h8Map = {};
-      allData.forEach(item => {
-        h6Map[item.h6] = (h6Map[item.h6] || 0) + 1;
-        h8Map[item.h8] = (h8Map[item.h8] || 0) + 1;
-      });
-
-      h6Resumen = Object.entries(h6Map).map(([h6, soportes]) => ({ h6, soportes }));
-      h8Resumen = Object.entries(h8Map).map(([h8, soportes]) => ({ h8, soportes }));
+      h6ResumenFiltrado = [...h6ResumenOriginal];
+      h8ResumenFiltrado = [...h8ResumenOriginal];
 
       resaltarComuna("");
       renderAll();
     });
 
+    // =========================
+    // LEYENDA
+    // =========================
     const legend = L.control({ position: "bottomright" });
 
     legend.onAdd = function () {
@@ -634,6 +696,9 @@
 
     legend.addTo(map);
 
+    // =========================
+    // INIT
+    // =========================
     loadComunas();
     loadData();
   </script>
