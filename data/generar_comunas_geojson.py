@@ -1,16 +1,5 @@
 import json
-
-# ==========================
-# COMUNAS APROXIMADAS SANTIAGO
-# (Versión funcional inicial)
-# ==========================
-# Esto NO es cartografía oficial exacta,
-# pero sirve para dejar funcionando el mapa
-# y demarcar comunas visualmente.
-#
-# Luego si quieres, la reemplazamos por una
-# versión oficial más precisa.
-# ==========================
+import os
 
 comunas = [
     {
@@ -235,8 +224,10 @@ geojson = {
     "features": features
 }
 
-with open("comunas.geojson", "w", encoding="utf-8") as f:
+output_path = os.path.join(os.path.dirname(__file__), "comunas.geojson")
+
+with open(output_path, "w", encoding="utf-8") as f:
     json.dump(geojson, f, ensure_ascii=False, indent=2)
 
-print("✅ Archivo creado: data/comunas.geojson")
+print("✅ Archivo creado:", output_path)
 print(f"📍 Comunas generadas: {len(features)}")

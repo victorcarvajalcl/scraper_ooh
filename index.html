@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mapa OOH Pro | H6 H8 Comunas</title>
+  <title>Mapa OOH Pro</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
@@ -19,6 +19,7 @@
       --text:#e5e7eb;
       --blue:#2563eb;
     }
+
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#f8fafc}
     #app{display:grid;grid-template-columns:340px 1fr;height:100%}
@@ -174,7 +175,7 @@
           <li><code>data/soportes_h3.json</code></li>
           <li><code>data/resumen_h6.csv</code></li>
           <li><code>data/resumen_h8.csv</code></li>
-          <li><code>data/comunas.geojson</code> (opcional pero recomendado)</li>
+          <li><code>data/comunas.geojson</code></li>
         </ul>
       </div>
     </aside>
@@ -228,9 +229,9 @@
     // =========================
     function getColor(count) {
       return count > 300 ? "#7e22ce"
-        : count > 100 ? "#6366f1"
-        : count > 30 ? "#f59e0b"
-        : count > 10 ? "#86efac"
+        : count > 100 ? "#f97316"
+        : count > 30 ? "#facc15"
+        : count > 10 ? "#4ade80"
         : "#dbeafe";
     }
 
@@ -238,6 +239,7 @@
       try {
         return h3.cellToBoundary(cell, true).map(([lat, lng]) => [lat, lng]);
       } catch (e) {
+        console.warn("Error con H3:", cell, e);
         return null;
       }
     }
@@ -271,7 +273,7 @@
             color: "#475569",
             weight: 2.4,
             fillColor: "#94a3b8",
-            fillOpacity: 0.02,
+            fillOpacity: 0.03,
             opacity: 1
           },
           onEachFeature: function (feature, layer) {
@@ -330,7 +332,7 @@
           color: "#0f172a",
           weight: 4,
           fillColor: "#60a5fa",
-          fillOpacity: 0.08,
+          fillOpacity: 0.10,
           opacity: 1
         }
       }).addTo(map);
@@ -393,7 +395,7 @@
     }
 
     // =========================
-    // RENDER HEX
+    // RENDER HEXÁGONOS REALES
     // =========================
     function renderHexLayer(layer, data, keyName, label, strokeColor, weight, fillOpacity, dashed=false) {
       layer.clearLayers();
@@ -534,14 +536,14 @@
     }
 
     function renderAll() {
-      // Base grids = solo bordes / malla
+      // Malla base
       renderHexLayer(
         h6BaseLayer,
         buildBaseGridFromSummary(h6ResumenOriginal, "h6"),
         "h6",
         "Malla base H6",
         "#93c5fd",
-        1.4,
+        1.2,
         0.01,
         true
       );
@@ -552,20 +554,20 @@
         "h8",
         "Malla base H8",
         "#c4b5fd",
-        1.0,
+        0.9,
         0.01,
         true
       );
 
-      // Data grids = hex con densidad
+      // Hex con datos
       renderHexLayer(
         h6DataLayer,
         h6ResumenFiltrado,
         "h6",
         "H6 con datos",
         "#2563eb",
-        2.8,
-        0.12,
+        2.2,
+        0.18,
         false
       );
 
@@ -575,8 +577,8 @@
         "h8",
         "H8 con datos",
         "#0f172a",
-        1.4,
-        0.08,
+        1.1,
+        0.10,
         false
       );
 
@@ -680,9 +682,9 @@
       div.innerHTML = `
         <b>Densidad</b><br>
         <span class="dot" style="background:#dbeafe"></span>Baja<br>
-        <span class="dot" style="background:#86efac"></span>Media<br>
-        <span class="dot" style="background:#f59e0b"></span>Alta<br>
-        <span class="dot" style="background:#6366f1"></span>Muy alta<br>
+        <span class="dot" style="background:#4ade80"></span>Media<br>
+        <span class="dot" style="background:#facc15"></span>Alta<br>
+        <span class="dot" style="background:#f97316"></span>Muy alta<br>
         <span class="dot" style="background:#7e22ce"></span>Extrema<br><br>
 
         <b>Lectura territorial</b><br>
