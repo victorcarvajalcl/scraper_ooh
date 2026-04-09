@@ -1,738 +1,235 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SCRAPER_OOH - Comercial</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCRAPER_OOH PRO</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+body { margin:0; font-family:Arial; display:flex; }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b1220;
-      color: white;
-      overflow: hidden;
-    }
+#sidebar {
+  width:360px;
+  background:#0b1220;
+  color:white;
+  padding:15px;
+  overflow:auto;
+}
 
-    .app {
-      display: flex;
-      width: 100vw;
-      height: 100vh;
-    }
+#map { flex:1; height:100vh; }
 
-    .sidebar {
-      width: 370px;
-      background: linear-gradient(180deg, #071224 0%, #0b1324 100%);
-      padding: 20px 18px;
-      overflow-y: auto;
-      border-right: 1px solid rgba(255,255,255,0.08);
-    }
+.panel { margin-bottom:20px; }
+.panel h3 { margin-bottom:10px; }
 
-    .sidebar h1 {
-      margin: 0 0 8px;
-      font-size: 26px;
-      letter-spacing: 1px;
-    }
+.ranking-item {
+  background:#081a3b;
+  padding:10px;
+  margin-bottom:8px;
+  cursor:pointer;
+  border-radius:10px;
+}
 
-    .subtitle {
-      color: #b8c4d9;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
+button { width:100%; padding:10px; }
 
-    .panel {
-      background: rgba(7, 20, 40, 0.95);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 18px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-    }
-
-    .panel h3 {
-      margin: 0 0 14px;
-      font-size: 14px;
-      color: #d8e4ff;
-      letter-spacing: 0.7px;
-      text-transform: uppercase;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .stat-card {
-      background: #081a3b;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 14px;
-    }
-
-    .stat-card .label {
-      font-size: 13px;
-      color: #b4c0d5;
-      margin-bottom: 8px;
-    }
-
-    .stat-card .value {
-      font-size: 30px;
-      font-weight: bold;
-      color: white;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 6px;
-      color: #dbe7ff;
-      font-weight: 600;
-    }
-
-    input, select, button {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: #091a36;
-      color: white;
-      outline: none;
-      margin-bottom: 14px;
-      font-size: 14px;
-    }
-
-    input::placeholder { color: #7f92b1; }
-
-    button {
-      background: linear-gradient(90deg, #2563eb, #3b82f6);
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      opacity: 0.95;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .chip {
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: #0a1b3a;
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 13px;
-      color: #dce8ff;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .chip.active {
-      background: #2563eb;
-      color: white;
-      border-color: transparent;
-    }
-
-    .ranking-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .ranking-item {
-      background: #081a3b;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 12px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .ranking-item:hover {
-      transform: translateY(-1px);
-      border-color: rgba(59,130,246,0.5);
-      background: #0d234d;
-    }
-
-    .ranking-item .title {
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 6px;
-      color: white;
-    }
-
-    .ranking-item .meta {
-      font-size: 13px;
-      color: #b7c4d8;
-    }
-
-    .map-wrap {
-      flex: 1;
-      position: relative;
-      background: #f4f4f4;
-    }
-
-    #map {
-      width: 100%;
-      height: 100%;
-    }
-
-    .legend {
-      position: absolute;
-      bottom: 18px;
-      right: 18px;
-      z-index: 1000;
-      background: rgba(255,255,255,0.96);
-      color: #111827;
-      padding: 16px;
-      border-radius: 18px;
-      width: 270px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-      font-size: 14px;
-    }
-
-    .legend h4 {
-      margin: 0 0 10px;
-      font-size: 15px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 6px 0;
-    }
-
-    .dot, .square {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .square { border-radius: 2px; }
-
-    @media (max-width: 900px) {
-      .app { flex-direction: column; }
-      .sidebar { width: 100%; height: 48vh; }
-      .map-wrap { height: 52vh; }
-      .legend { width: 220px; font-size: 12px; }
-    }
-  </style>
+.leaflet-interactive:hover {
+  fill-opacity:0.6 !important;
+}
+</style>
 </head>
+
 <body>
 
-<div class="app">
-  <aside class="sidebar">
-    <h1>SCRAPER_OOH</h1>
-    <div class="subtitle">
-      Lectura territorial comercial, densidad de soportes y zonas prioritarias.
-    </div>
+<div id="sidebar">
 
-    <div class="panel">
-      <h3>Resumen</h3>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="label">Soportes visibles</div>
-          <div class="value" id="statSoportes">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Hex activos</div>
-          <div class="value" id="statHexActivos">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">H6 activos</div>
-          <div class="value" id="statH6">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">H8 activos</div>
-          <div class="value" id="statH8">0</div>
-        </div>
-      </div>
-    </div>
+<h2>SCRAPER_OOH</h2>
 
-    <div class="panel">
-      <h3>Filtros</h3>
-
-      <label>Buscar soporte</label>
-      <input type="text" id="searchInput" placeholder="Ej: Metro, Parque Arauco..." />
-
-      <label>Filtrar por comuna</label>
-      <select id="comunaSelect">
-        <option value="">Todas</option>
-      </select>
-
-      <label>Filtrar por categoría</label>
-      <select id="categoriaSelect">
-        <option value="">Todas</option>
-      </select>
-
-      <label>Resolución visible</label>
-      <select id="resolucionSelect">
-        <option value="auto">Automática por zoom</option>
-        <option value="h6">Mostrar H6</option>
-        <option value="h8">Mostrar H8</option>
-        <option value="none">Sin malla</option>
-      </select>
-
-      <button id="btnReset">Restablecer vista</button>
-    </div>
-
-    <div class="panel">
-      <h3>Capas del producto</h3>
-      <div class="chips">
-        <div class="chip active" data-layer="comunas">Comunas</div>
-        <div class="chip active" data-layer="h6">Malla H6</div>
-        <div class="chip" data-layer="h8">Malla H8</div>
-        <div class="chip active" data-layer="soportes">Soportes</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>Top zonas H6</h3>
-      <div id="rankingH6" class="ranking-list"></div>
-    </div>
-
-    <div class="panel">
-      <h3>Top zonas H8</h3>
-      <div id="rankingH8" class="ranking-list"></div>
-    </div>
-  </aside>
-
-  <div class="map-wrap">
-    <div id="map"></div>
-
-    <div class="legend">
-      <h4>Densidad</h4>
-      <div class="legend-item"><span class="square" style="background:#93c5fd;"></span> Baja H6</div>
-      <div class="legend-item"><span class="square" style="background:#3b82f6;"></span> Media H6</div>
-      <div class="legend-item"><span class="square" style="background:#1d4ed8;"></span> Alta H6</div>
-      <div class="legend-item"><span class="square" style="background:#d8b4fe;"></span> Baja H8</div>
-      <div class="legend-item"><span class="square" style="background:#a855f7;"></span> Alta H8</div>
-      <hr>
-      <h4>Lectura territorial</h4>
-      <div class="legend-item"><span class="square" style="background:#2563eb;"></span> H6 = macrozona</div>
-      <div class="legend-item"><span class="square" style="background:#9333ea;"></span> H8 = detalle</div>
-      <div class="legend-item"><span class="square" style="background:#111827;"></span> Comunas</div>
-      <div class="legend-item"><span class="dot" style="background:#ef4444;"></span> Soportes</div>
-    </div>
-  </div>
+<div class="panel">
+<h3>Resumen</h3>
+<div id="stats"></div>
 </div>
+
+<div class="panel">
+<h3>Filtros</h3>
+<input id="search" placeholder="Buscar">
+<select id="comuna"></select>
+<button id="export">Exportar CSV</button>
+</div>
+
+<div class="panel">
+<h3>Top H6</h3>
+<div id="rankH6"></div>
+</div>
+
+<div class="panel">
+<h3>Top H8</h3>
+<div id="rankH8"></div>
+</div>
+
+<div class="panel">
+<h3>Top Comunas</h3>
+<div id="rankComunas"></div>
+</div>
+
+</div>
+
+<div id="map"></div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
 <script>
-  const map = L.map('map', { zoomControl: true }).setView([-33.45, -70.66], 11);
+const map = L.map('map').setView([-33.45,-70.66],11);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
-  }).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-  let allSoportes = [];
-  let filteredSoportes = [];
-  let comunasGeo = null;
-  let h6Geo = null;
-  let h8Geo = null;
+let h6Geo, h8Geo, soportes, comunas;
 
-  let lastHighlightedComuna = null;
-  let lastHighlightedHex = null;
+let cluster = L.markerClusterGroup();
+let capaComunas, capaH6, capaH8;
 
-  let capaComunas = L.geoJSON(null, {
-    style: {
-      color: "#1f2937",
-      weight: 1.4,
-      fillOpacity: 0
-    },
-    onEachFeature: (feature, layer) => {
-      const nombre = feature.properties?.Comuna || feature.properties?.NOM_COM || feature.properties?.nombre || "Comuna";
-      layer.bindPopup(`<b>Comuna:</b> ${nombre}`);
+// ================= LOAD
+Promise.all([
+ fetch("data/h6.geojson").then(r=>r.json()),
+ fetch("data/h8.geojson").then(r=>r.json()),
+ fetch("data/soportes_h3.json").then(r=>r.json()),
+ fetch("data/comunas.geojson").then(r=>r.json())
+]).then(([h6,h8,s,c])=>{
+ h6Geo=h6;
+ h8Geo=h8;
+ soportes=s;
+ comunas=c;
 
-      layer.on("click", () => {
-        highlightComuna(layer);
-        map.fitBounds(layer.getBounds(), { padding: [20,20] });
-      });
-    }
-  });
+ init();
+});
 
-  let capaSoportes = L.markerClusterGroup({
-    disableClusteringAtZoom: 15,
-    spiderfyOnMaxZoom: true,
-    showCoverageOnHover: false,
-    maxClusterRadius: 50
-  });
+// ================= INIT
+function init(){
 
-  let capaH6 = null;
-  let capaH8 = null;
-
-  const chipState = {
-    comunas: true,
-    h6: true,
-    h8: false,
-    soportes: true
-  };
-
-  Promise.all([
-    fetch("data/comunas.geojson").then(r => r.json()),
-    fetch("data/soportes_h3.json").then(r => r.json()),
-    fetch("data/h6.geojson").then(r => r.json()),
-    fetch("data/h8.geojson").then(r => r.json())
-  ]).then(([comunas, soportes, h6, h8]) => {
-    comunasGeo = comunas;
-    allSoportes = soportes;
-    filteredSoportes = [...allSoportes];
-    h6Geo = h6;
-    h8Geo = h8;
-
-    capaComunas.addData(comunasGeo).addTo(map);
-
-    initFilters();
-    renderAll();
-    updateResolutionByZoom();
-    renderRankings();
-  });
-
-  function initFilters() {
-    const comunaSet = new Set();
-    const categoriaSet = new Set();
-
-    allSoportes.forEach(s => {
-      if (s.comuna) comunaSet.add(s.comuna);
-      if (s.categoria) categoriaSet.add(s.categoria);
-    });
-
-    const comunaSelect = document.getElementById("comunaSelect");
-    [...comunaSet].sort().forEach(c => {
-      const option = document.createElement("option");
-      option.value = c;
-      option.textContent = c;
-      comunaSelect.appendChild(option);
-    });
-
-    const categoriaSelect = document.getElementById("categoriaSelect");
-    [...categoriaSet].sort().forEach(c => {
-      const option = document.createElement("option");
-      option.value = c;
-      option.textContent = c;
-      categoriaSelect.appendChild(option);
-    });
-
-    document.getElementById("searchInput").addEventListener("input", applyFilters);
-    document.getElementById("comunaSelect").addEventListener("change", () => {
-      applyFilters();
-      zoomToSelectedComuna();
-    });
-    document.getElementById("categoriaSelect").addEventListener("change", applyFilters);
-    document.getElementById("resolucionSelect").addEventListener("change", updateResolutionByZoom);
-
-    document.getElementById("btnReset").addEventListener("click", () => {
-      document.getElementById("searchInput").value = "";
-      document.getElementById("comunaSelect").value = "";
-      document.getElementById("categoriaSelect").value = "";
-      document.getElementById("resolucionSelect").value = "auto";
-      filteredSoportes = [...allSoportes];
-      clearComunaHighlight();
-      renderAll();
-      map.setView([-33.45, -70.66], 11);
-      updateResolutionByZoom();
-      renderRankings();
-    });
-
-    document.querySelectorAll(".chip").forEach(chip => {
-      chip.addEventListener("click", () => {
-        const key = chip.dataset.layer;
-        chipState[key] = !chipState[key];
-        chip.classList.toggle("active", chipState[key]);
-        renderAll();
-      });
-    });
-
-    map.on("zoomend moveend", () => {
-      updateResolutionByZoom();
-      renderRankings();
-    });
+ // comunas
+ capaComunas=L.geoJSON(comunas,{
+  style:{color:"#000",weight:1,fillOpacity:0},
+  onEachFeature:(f,l)=>{
+   l.on("click",()=>map.fitBounds(l.getBounds()));
   }
+ }).addTo(map);
 
-  function applyFilters() {
-    const q = document.getElementById("searchInput").value.toLowerCase().trim();
-    const comuna = document.getElementById("comunaSelect").value;
-    const categoria = document.getElementById("categoriaSelect").value;
+ // puntos
+ soportes.forEach(p=>{
+  if(!p.lat||!p.lng)return;
+  cluster.addLayer(L.circleMarker([p.lat,p.lng]));
+ });
+ map.addLayer(cluster);
 
-    filteredSoportes = allSoportes.filter(s => {
-      const text = `${s.nombre || ""} ${s.direccion || ""} ${s.comuna || ""} ${s.categoria || ""}`.toLowerCase();
-      const matchText = !q || text.includes(q);
-      const matchComuna = !comuna || s.comuna === comuna;
-      const matchCategoria = !categoria || s.categoria === categoria;
-      return matchText && matchComuna && matchCategoria;
-    });
+ map.on("moveend zoomend",renderHex);
+ renderHex();
+ renderRankings();
+ renderComunas();
+}
 
-    renderAll();
-    renderRankings();
+// ================= HEX
+function renderHex(){
+ if(capaH6) map.removeLayer(capaH6);
+ if(capaH8) map.removeLayer(capaH8);
+
+ let bounds=map.getBounds();
+ let zoom=map.getZoom();
+
+ let geo=(zoom<13)?h6Geo:h8Geo;
+
+ let filtered=geo.features.filter(f=>{
+  return bounds.intersects(L.geoJSON(f).getBounds());
+ });
+
+ let layer=L.geoJSON(filtered,{
+  style:f=>{
+   let s=f.properties.soportes||0;
+   let c="#93c5fd";
+   if(s>5)c="#60a5fa";
+   if(s>10)c="#3b82f6";
+   return {color:"#2563eb",fillColor:c,fillOpacity:0.3};
+  },
+  onEachFeature:(f,l)=>{
+   l.on("click",()=>map.fitBounds(l.getBounds()));
   }
+ }).addTo(map);
 
-  function renderAll() {
-    renderSoportes();
-    renderHexLayers();
-    updateStats();
-  }
+ if(zoom<13) capaH6=layer;
+ else capaH8=layer;
 
-  function renderSoportes() {
-    capaSoportes.clearLayers();
+ renderRankings();
+}
 
-    filteredSoportes.forEach(p => {
-      const lat = Number(p.lat);
-      const lng = Number(p.lng);
-      if (isNaN(lat) || isNaN(lng)) return;
+// ================= SCORE
+function score(f){
+ let s=f.properties.soportes||0;
+ return s>=20?s*2:s>=10?s*1.5:s;
+}
 
-      const marker = L.circleMarker([lat, lng], {
-        radius: 4,
-        color: "#ffffff",
-        weight: 1,
-        fillColor: "#ef4444",
-        fillOpacity: 0.95
-      });
+// ================= RANKINGS
+function renderRankings(){
 
-      marker.bindPopup(`
-        <b>${p.nombre || "Soporte"}</b><br>
-        <b>Dirección:</b> ${p.direccion || "-"}<br>
-        <b>Comuna:</b> ${p.comuna || "-"}<br>
-        <b>Categoría:</b> ${p.categoria || "-"}
-      `);
+ renderRank(h6Geo.features,"rankH6");
+ renderRank(h8Geo.features,"rankH8");
+}
 
-      capaSoportes.addLayer(marker);
-    });
+function renderRank(features,id){
+ let container=document.getElementById(id);
+ container.innerHTML="";
 
-    if (chipState.soportes) {
-      if (!map.hasLayer(capaSoportes)) map.addLayer(capaSoportes);
-    } else {
-      if (map.hasLayer(capaSoportes)) map.removeLayer(capaSoportes);
-    }
+ let bounds=map.getBounds();
 
-    if (chipState.comunas) {
-      if (!map.hasLayer(capaComunas)) map.addLayer(capaComunas);
-    } else {
-      if (map.hasLayer(capaComunas)) map.removeLayer(capaComunas);
-    }
-  }
+ let list=features
+ .filter(f=>bounds.intersects(L.geoJSON(f).getBounds()))
+ .map(f=>({...f,score:score(f)}))
+ .sort((a,b)=>b.score-a.score)
+ .slice(0,5);
 
-  function styleH6(f) {
-    const s = Number(f.properties.soportes || 0);
-    let fill = "#93c5fd";
-    if (s >= 5) fill = "#60a5fa";
-    if (s >= 10) fill = "#3b82f6";
-    if (s >= 20) fill = "#1d4ed8";
-    return { color: "#2563eb", weight: 1, fillColor: fill, fillOpacity: 0.35 };
-  }
+ list.forEach((f,i)=>{
+  let div=document.createElement("div");
+  div.className="ranking-item";
+  div.innerHTML=`#${i+1} Score:${f.score}`;
+  div.onclick=()=>map.fitBounds(L.geoJSON(f).getBounds());
+  container.appendChild(div);
+ });
+}
 
-  function styleH8(f) {
-    const s = Number(f.properties.soportes || 0);
-    let fill = "#e9d5ff";
-    if (s >= 2) fill = "#d8b4fe";
-    if (s >= 5) fill = "#c084fc";
-    if (s >= 10) fill = "#a855f7";
-    return { color: "#9333ea", weight: 0.8, fillColor: fill, fillOpacity: 0.30 };
-  }
+// ================= COMUNAS
+function renderComunas(){
+ let c={};
+ soportes.forEach(s=>{
+  c[s.comuna]=(c[s.comuna]||0)+1;
+ });
 
-  function onEachHex(feature, layer, tipo) {
-    const hexId = feature.properties.h6 || feature.properties.h8 || feature.properties.hex || "-";
-    const soportes = feature.properties.soportes || 0;
+ let list=Object.entries(c)
+ .sort((a,b)=>b[1]-a[1])
+ .slice(0,5);
 
-    layer.bindPopup(`
-      <b>${tipo}</b><br>
-      Hex: ${hexId}<br>
-      Soportes: ${soportes}
-    `);
+ let container=document.getElementById("rankComunas");
+ list.forEach(([k,v],i)=>{
+  let div=document.createElement("div");
+  div.className="ranking-item";
+  div.innerHTML=`#${i+1} ${k} (${v})`;
+  container.appendChild(div);
+ });
+}
 
-    layer.on("mouseover", () => {
-      layer.setStyle({ weight: 2.2, fillOpacity: 0.55 });
-    });
+// ================= EXPORT
+document.getElementById("export").onclick=()=>{
+ let csv="lat,lng\n";
+ soportes.forEach(s=>{
+  csv+=`${s.lat},${s.lng}\n`;
+ });
 
-    layer.on("mouseout", () => {
-      if (lastHighlightedHex !== layer) {
-        if (tipo === "H6") layer.setStyle(styleH6(feature));
-        if (tipo === "H8") layer.setStyle(styleH8(feature));
-      }
-    });
-
-    layer.on("click", () => {
-      highlightHex(layer, feature, tipo);
-    });
-  }
-
-  function renderHexLayers() {
-    if (capaH6 && map.hasLayer(capaH6)) map.removeLayer(capaH6);
-    if (capaH8 && map.hasLayer(capaH8)) map.removeLayer(capaH8);
-
-    const bounds = map.getBounds();
-
-    const h6Visible = {
-      type: "FeatureCollection",
-      features: h6Geo.features.filter(f => {
-        const layer = L.geoJSON(f);
-        return bounds.intersects(layer.getBounds());
-      })
-    };
-
-    const h8Visible = {
-      type: "FeatureCollection",
-      features: h8Geo.features.filter(f => {
-        const layer = L.geoJSON(f);
-        return bounds.intersects(layer.getBounds());
-      })
-    };
-
-    capaH6 = L.geoJSON(h6Visible, {
-      style: styleH6,
-      onEachFeature: (f, l) => onEachHex(f, l, "H6")
-    });
-
-    capaH8 = L.geoJSON(h8Visible, {
-      style: styleH8,
-      onEachFeature: (f, l) => onEachHex(f, l, "H8")
-    });
-
-    updateResolutionByZoom();
-  }
-
-  function updateResolutionByZoom() {
-    const mode = document.getElementById("resolucionSelect")?.value || "auto";
-    const zoom = map.getZoom();
-
-    if (capaH6 && map.hasLayer(capaH6)) map.removeLayer(capaH6);
-    if (capaH8 && map.hasLayer(capaH8)) map.removeLayer(capaH8);
-
-    if (mode === "none") return;
-
-    if (mode === "h6") {
-      if (chipState.h6 && capaH6) capaH6.addTo(map);
-      return;
-    }
-
-    if (mode === "h8") {
-      if (chipState.h8 && capaH8) capaH8.addTo(map);
-      return;
-    }
-
-    if (zoom < 13) {
-      if (chipState.h6 && capaH6) capaH6.addTo(map);
-    } else {
-      if (chipState.h8 && capaH8) capaH8.addTo(map);
-    }
-  }
-
-  function updateStats() {
-    const h6Count = capaH6 ? capaH6.getLayers().length : 0;
-    const h8Count = capaH8 ? capaH8.getLayers().length : 0;
-
-    document.getElementById("statSoportes").textContent = filteredSoportes.length.toLocaleString("es-CL");
-    document.getElementById("statH6").textContent = h6Count.toLocaleString("es-CL");
-    document.getElementById("statH8").textContent = h8Count.toLocaleString("es-CL");
-    document.getElementById("statHexActivos").textContent = (h6Count + h8Count).toLocaleString("es-CL");
-  }
-
-  function renderRankings() {
-    renderRankingList(h6Geo.features, "rankingH6", "H6", 5);
-    renderRankingList(h8Geo.features, "rankingH8", "H8", 5);
-  }
-
-  function renderRankingList(features, containerId, tipo, limit = 5) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = "";
-
-    const bounds = map.getBounds();
-
-    const visibles = features.filter(f => {
-      const layer = L.geoJSON(f);
-      return bounds.intersects(layer.getBounds());
-    });
-
-    const top = visibles
-      .slice()
-      .sort((a, b) => Number(b.properties.soportes || 0) - Number(a.properties.soportes || 0))
-      .slice(0, limit);
-
-    if (!top.length) {
-      container.innerHTML = `<div class="ranking-item"><div class="meta">Sin datos visibles</div></div>`;
-      return;
-    }
-
-    top.forEach((f, i) => {
-      const hexId = f.properties.h6 || f.properties.h8 || f.properties.hex || "-";
-      const soportes = f.properties.soportes || 0;
-
-      const item = document.createElement("div");
-      item.className = "ranking-item";
-      item.innerHTML = `
-        <div class="title">#${i + 1} · ${hexId}</div>
-        <div class="meta">${soportes} soportes · ${tipo}</div>
-      `;
-
-      item.addEventListener("click", () => {
-        const layer = L.geoJSON(f);
-        map.fitBounds(layer.getBounds(), { padding: [30, 30] });
-      });
-
-      container.appendChild(item);
-    });
-  }
-
-  function zoomToSelectedComuna() {
-    const comuna = document.getElementById("comunaSelect").value;
-    if (!comuna) return;
-
-    capaComunas.eachLayer(layer => {
-      const nombre = layer.feature.properties?.Comuna || layer.feature.properties?.NOM_COM || layer.feature.properties?.nombre || "";
-      if (nombre === comuna) {
-        highlightComuna(layer);
-        map.fitBounds(layer.getBounds(), { padding: [20,20] });
-      }
-    });
-  }
-
-  function highlightComuna(layer) {
-    clearComunaHighlight();
-    layer.setStyle({ color: "#2563eb", weight: 3, fillOpacity: 0.08, fillColor: "#60a5fa" });
-    lastHighlightedComuna = layer;
-  }
-
-  function clearComunaHighlight() {
-    if (lastHighlightedComuna) {
-      capaComunas.resetStyle(lastHighlightedComuna);
-      lastHighlightedComuna = null;
-    }
-  }
-
-  function highlightHex(layer, feature, tipo) {
-    clearHexHighlight();
-    layer.setStyle({ weight: 2.8, fillOpacity: 0.65 });
-    lastHighlightedHex = layer;
-    map.fitBounds(layer.getBounds(), { padding: [30,30] });
-  }
-
-  function clearHexHighlight() {
-    if (lastHighlightedHex) {
-      const feature = lastHighlightedHex.feature;
-      if (feature.properties.h6) {
-        lastHighlightedHex.setStyle(styleH6(feature));
-      } else {
-        lastHighlightedHex.setStyle(styleH8(feature));
-      }
-      lastHighlightedHex = null;
-    }
-  }
+ let blob=new Blob([csv]);
+ let a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);
+ a.download="data.csv";
+ a.click();
+}
 </script>
 
 </body>
