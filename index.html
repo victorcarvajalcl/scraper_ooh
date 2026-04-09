@@ -6,6 +6,8 @@
   <title>SCRAPER_OOH</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
 
   <style>
     * { box-sizing: border-box; }
@@ -107,9 +109,7 @@
       font-size: 14px;
     }
 
-    input::placeholder {
-      color: #7f92b1;
-    }
+    input::placeholder { color: #7f92b1; }
 
     button {
       background: linear-gradient(90deg, #2563eb, #3b82f6);
@@ -137,6 +137,7 @@
       font-size: 13px;
       color: #dce8ff;
       cursor: pointer;
+      user-select: none;
     }
 
     .chip.active {
@@ -192,23 +193,10 @@
     .square { border-radius: 2px; }
 
     @media (max-width: 900px) {
-      .app {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        height: 45vh;
-      }
-
-      .map-wrap {
-        height: 55vh;
-      }
-
-      .legend {
-        width: 220px;
-        font-size: 12px;
-      }
+      .app { flex-direction: column; }
+      .sidebar { width: 100%; height: 45vh; }
+      .map-wrap { height: 55vh; }
+      .legend { width: 220px; font-size: 12px; }
     }
   </style>
 </head>
@@ -302,6 +290,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
 <script>
   const map = L.map('map', { zoomControl: true }).setView([-33.45, -70.66], 11);
@@ -328,7 +317,13 @@
     }
   });
 
-  let capaSoportes = L.layerGroup();
+  let capaSoportes = L.markerClusterGroup({
+    disableClusteringAtZoom: 15,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    maxClusterRadius: 50
+  });
+
   let capaH6 = null;
   let capaH8 = null;
 
@@ -437,9 +432,12 @@
     capaSoportes.clearLayers();
 
     filteredSoportes.forEach(p => {
-      if (!p.lat || !p.lng) return;
+      const lat = Number(p.lat);
+      const lng = Number(p.lng);
 
-      const marker = L.circleMarker([p.lat, p.lng], {
+      if (isNaN(lat) || isNaN(lng)) return;
+
+      const marker = L.circleMarker([lat, lng], {
         radius: 4,
         color: "#ffffff",
         weight: 1,
@@ -470,30 +468,12 @@
     }
   }
 
-  function filterHexByVisibleSoportes(geojson, key) {
-    const visibleHexes = new Set(
-      filteredSoportes
-        .map(s => s[key])
-        .filter(Boolean)
-    );
-
-    return {
-      type: "FeatureCollection",
-      features: geojson.features.filter(f => {
-        const val = f.properties[key] || f.properties.hex;
-        return visibleHexes.has(val);
-      })
-    };
-  }
-
   function renderHexLayers() {
     if (capaH6 && map.hasLayer(capaH6)) map.removeLayer(capaH6);
     if (capaH8 && map.hasLayer(capaH8)) map.removeLayer(capaH8);
 
-    const h6Filtered = filterHexByVisibleSoportes(h6Geo, "h6");
-    const h8Filtered = filterHexByVisibleSoportes(h8Geo, "h8");
-
-    capaH6 = L.geoJSON(h6Filtered, {
+    // 👇 MOSTRAR MALLA COMPLETA REAL, no filtrarla por campos inciertos
+    capaH6 = L.geoJSON(h6Geo, {
       style: f => {
         const s = Number(f.properties.soportes || 0);
         let fill = "#93c5fd";
@@ -517,7 +497,7 @@
       }
     });
 
-    capaH8 = L.geoJSON(h8Filtered, {
+    capaH8 = L.geoJSON(h8Geo, {
       style: f => {
         const s = Number(f.properties.soportes || 0);
         let fill = "#e9d5ff";
@@ -554,26 +534,26 @@
     if (mode === "none") return;
 
     if (mode === "h6") {
-      if (chipState.h6) capaH6.addTo(map);
+      if (chipState.h6 && capaH6) capaH6.addTo(map);
       return;
     }
 
     if (mode === "h8") {
-      if (chipState.h8) capaH8.addTo(map);
+      if (chipState.h8 && capaH8) capaH8.addTo(map);
       return;
     }
 
     // auto
     if (zoom < 13) {
-      if (chipState.h6) capaH6.addTo(map);
+      if (chipState.h6 && capaH6) capaH6.addTo(map);
     } else {
-      if (chipState.h8) capaH8.addTo(map);
+      if (chipState.h8 && capaH8) capaH8.addTo(map);
     }
   }
 
   function updateStats() {
-    const h6Count = capaH6 ? capaH6.getLayers().length : 0;
-    const h8Count = capaH8 ? capaH8.getLayers().length : 0;
+    const h6Count = h6Geo?.features?.length || 0;
+    const h8Count = h8Geo?.features?.length || 0;
 
     document.getElementById("statSoportes").textContent = filteredSoportes.length.toLocaleString("es-CL");
     document.getElementById("statH6").textContent = h6Count.toLocaleString("es-CL");
