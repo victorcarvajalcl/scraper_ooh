@@ -19,24 +19,10 @@
       --text: #e5e7eb;
       --input: #0b1220;
       --blue: #2563eb;
-      --blue-soft: #60a5fa;
-      --green: #22c55e;
-      --yellow: #eab308;
-      --orange: #f97316;
-      --red: #dc2626;
-      --purple: #7e22ce;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      height: 100%;
-      font-family: Arial, sans-serif;
-      background: #f8fafc;
-    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: Arial, sans-serif; background: #f8fafc; }
 
     #app {
       display: grid;
@@ -52,28 +38,11 @@
       border-right: 1px solid #1e293b;
     }
 
-    #map {
-      width: 100%;
-      height: 100%;
-    }
+    #map { width: 100%; height: 100%; }
 
-    .brand {
-      margin-bottom: 18px;
-    }
-
-    .brand h1 {
-      margin: 0 0 6px;
-      font-size: 34px;
-      line-height: 1;
-      letter-spacing: -1px;
-    }
-
-    .brand p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    .brand { margin-bottom: 18px; }
+    .brand h1 { margin: 0 0 6px; font-size: 34px; line-height: 1; letter-spacing: -1px; }
+    .brand p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
 
     .card {
       background: rgba(17, 24, 39, 0.88);
@@ -105,21 +74,10 @@
       padding: 14px;
     }
 
-    .stat-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .stat-value { font-size: 28px; font-weight: bold; color: white; }
 
-    .stat-value {
-      font-size: 28px;
-      font-weight: bold;
-      color: white;
-    }
-
-    .input,
-    .select,
-    .button {
+    .input, .select, .button {
       width: 100%;
       padding: 12px 14px;
       border-radius: 12px;
@@ -131,9 +89,7 @@
       font-size: 14px;
     }
 
-    .input::placeholder {
-      color: #64748b;
-    }
+    .input::placeholder { color: #64748b; }
 
     .button {
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
@@ -143,15 +99,9 @@
       transition: 0.2s ease;
     }
 
-    .button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.05);
-    }
+    .button:hover { transform: translateY(-1px); filter: brightness(1.05); }
 
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .muted { color: var(--muted); font-size: 13px; }
 
     .help-list {
       padding-left: 18px;
@@ -159,21 +109,7 @@
       margin: 0;
     }
 
-    .help-list li {
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #cbd5e1;
-      font-size: 12px;
-      margin: 4px 6px 0 0;
-    }
+    .help-list li { color: var(--text); font-size: 14px; }
 
     .legend {
       background: rgba(255, 255, 255, 0.96);
@@ -196,7 +132,7 @@
     .leaflet-popup-content {
       font-size: 13px;
       line-height: 1.6;
-      min-width: 200px;
+      min-width: 220px;
     }
 
     .leaflet-control-layers {
@@ -211,9 +147,7 @@
       min-width: 240px;
     }
 
-    .leaflet-container {
-      background: #eef2f7;
-    }
+    .leaflet-container { background: #eef2f7; }
 
     @media (max-width: 980px) {
       #app {
@@ -221,13 +155,8 @@
         grid-template-rows: auto 1fr;
       }
 
-      #sidebar {
-        max-height: 44vh;
-      }
-
-      .brand h1 {
-        font-size: 28px;
-      }
+      #sidebar { max-height: 44vh; }
+      .brand h1 { font-size: 28px; }
     }
   </style>
 </head>
@@ -290,23 +219,6 @@
           <li><b>Color:</b> concentración de soportes</li>
         </ul>
       </div>
-
-      <div class="card">
-        <div class="card-title">Capas del producto</div>
-        <span class="pill">Comunas</span>
-        <span class="pill">Comuna seleccionada</span>
-        <span class="pill">Malla H6</span>
-        <span class="pill">Malla H8</span>
-        <span class="pill">Soportes</span>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Archivos requeridos</div>
-        <ul class="help-list">
-          <li><code>data/soportes_h3.json</code></li>
-          <li><code>data/comunas.geojson</code></li>
-        </ul>
-      </div>
     </aside>
 
     <main id="map"></main>
@@ -325,30 +237,29 @@
     }).addTo(map);
 
     // Layers
-    const h6BaseLayer = L.layerGroup().addTo(map);
-    const h6DataLayer = L.layerGroup().addTo(map);
-
-    const h8BaseLayer = L.layerGroup();
-    const h8DataLayer = L.layerGroup();
-
+    const h6Layer = L.layerGroup().addTo(map);
+    const h8Layer = L.layerGroup();
     const pointsLayer = L.markerClusterGroup({
       disableClusteringAtZoom: 15,
       spiderfyOnMaxZoom: true,
       showCoverageOnHover: false
     });
 
-    let comunasLayer;
+    let comunasLayer = null;
     let comunaSeleccionadaLayer = null;
-    let layerControl;
     let geoComunasData = null;
+    let layerControl = null;
 
     let allData = [];
     let currentData = [];
+    let h6Resumen = [];
+    let h8Resumen = [];
 
     function getColor(count) {
       return count > 300 ? "#7e22ce"
         : count > 100 ? "#6366f1"
-        : count > 30 ? "#94a3b8"
+        : count > 30 ? "#f59e0b"
+        : count > 10 ? "#86efac"
         : "#dbeafe";
     }
 
@@ -356,30 +267,26 @@
       return h3.cellToBoundary(cell, true).map(([lat, lng]) => [lat, lng]);
     }
 
-    function getCountMap(data, key) {
-      const mapCount = {};
-      data.forEach(item => {
-        const k = item[key];
-        mapCount[k] = (mapCount[k] || 0) + 1;
-      });
-      return mapCount;
-    }
+    async function loadCSV(path) {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error("No se pudo cargar " + path);
+      const text = await res.text();
 
-    function getVisiblePolygon() {
-      const bounds = map.getBounds();
-      return [[
-        [bounds.getSouth(), bounds.getWest()],
-        [bounds.getSouth(), bounds.getEast()],
-        [bounds.getNorth(), bounds.getEast()],
-        [bounds.getNorth(), bounds.getWest()],
-        [bounds.getSouth(), bounds.getWest()]
-      ]];
+      const lines = text.trim().split("\n");
+      const headers = lines[0].split(",");
+
+      return lines.slice(1).map(line => {
+        const values = line.split(",");
+        const obj = {};
+        headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim());
+        return obj;
+      });
     }
 
     async function loadComunas() {
       try {
         const res = await fetch("./data/comunas.geojson");
-        if (!res.ok) throw new Error("No se pudo cargar comunas.geojson");
+        if (!res.ok) throw new Error("No existe comunas.geojson");
 
         geoComunasData = await res.json();
 
@@ -415,9 +322,8 @@
           }
         }).addTo(map);
 
-        initLayerControl();
       } catch (err) {
-        console.warn("No se cargaron comunas:", err.message);
+        console.warn("Comunas no cargadas:", err.message);
       }
     }
 
@@ -449,18 +355,18 @@
           opacity: 1
         }
       }).addTo(map);
+
+      initLayerControl();
     }
 
     async function loadData() {
-      const res = await fetch("./data/soportes_h3.json");
-      if (!res.ok) {
-        alert("No se encontró ./data/soportes_h3.json");
-        throw new Error("No se encontró soportes_h3.json");
-      }
+      const [jsonData, csvH6, csvH8] = await Promise.all([
+        fetch("./data/soportes_h3.json").then(r => r.json()),
+        loadCSV("./data/resumen_h6.csv"),
+        loadCSV("./data/resumen_h8.csv")
+      ]);
 
-      allData = await res.json();
-
-      allData = allData.map(item => ({
+      allData = jsonData.map(item => ({
         ...item,
         h6: item.h6 || h3.latLngToCell(item.lat, item.lng, 6),
         h8: item.h8 || h3.latLngToCell(item.lat, item.lng, 8),
@@ -469,6 +375,8 @@
       }));
 
       currentData = [...allData];
+      h6Resumen = csvH6;
+      h8Resumen = csvH8;
 
       buildFilters();
       renderAll();
@@ -500,45 +408,32 @@
       });
     }
 
-    function renderGrid(baseLayer, dataLayer, resolution, label) {
-      baseLayer.clearLayers();
-      dataLayer.clearLayers();
+    function renderHexLayer(layer, data, keyName, label, strokeColor, weight, fillOpacity) {
+      layer.clearLayers();
 
-      const polygon = getVisiblePolygon();
-      const cells = h3.polygonToCells(polygon, resolution);
+      data.forEach(row => {
+        const cell = row[keyName];
+        const count = Number(row.soportes || 0);
 
-      const key = label.toLowerCase();
-      const countMap = getCountMap(currentData, key);
+        if (!cell) return;
 
-      cells.forEach(cell => {
-        // Base grid (malla completa)
         L.polygon(polygonFromH3(cell), {
-          color: label === "H6" ? "#94a3b8" : "#cbd5e1",
-          weight: label === "H6" ? 1.6 : 1,
-          fillOpacity: 0,
-          opacity: label === "H6" ? 0.9 : 0.75
-        }).addTo(baseLayer);
-
-        const count = countMap[cell] || 0;
-
-        if (count > 0) {
-          L.polygon(polygonFromH3(cell), {
-            color: label === "H6" ? "#1e3a8a" : "#111827",
-            weight: label === "H6" ? 2.2 : 1.3,
-            fillColor: getColor(count),
-            fillOpacity: label === "H6" ? 0.16 : 0.14,
-            opacity: 1
-          })
-          .bindPopup(`
-            <b>${label}</b>: ${cell}<br>
-            <b>Soportes:</b> ${count}
-          `)
-          .bindTooltip(`${label} • ${count} soportes`, {
-            sticky: true,
-            direction: "top"
-          })
-          .addTo(dataLayer);
-        }
+          color: strokeColor,
+          weight: weight,
+          opacity: 1,
+          fillColor: getColor(count),
+          fillOpacity: fillOpacity,
+          lineJoin: "round"
+        })
+        .bindPopup(`
+          <b>${label}</b>: ${cell}<br>
+          <b>Soportes:</b> ${count}
+        `)
+        .bindTooltip(`${label} • ${count} soportes`, {
+          sticky: true,
+          direction: "top"
+        })
+        .addTo(layer);
       });
     }
 
@@ -581,36 +476,25 @@
       const mode = document.getElementById("resolutionMode").value;
       const z = map.getZoom();
 
-      [
-        h6BaseLayer, h6DataLayer,
-        h8BaseLayer, h8DataLayer,
-        pointsLayer
-      ].forEach(layer => {
+      [h6Layer, h8Layer, pointsLayer].forEach(layer => {
         if (map.hasLayer(layer)) map.removeLayer(layer);
       });
 
       if (mode === "h6") {
-        map.addLayer(h6BaseLayer);
-        map.addLayer(h6DataLayer);
+        map.addLayer(h6Layer);
       } else if (mode === "h8") {
-        map.addLayer(h8BaseLayer);
-        map.addLayer(h8DataLayer);
+        map.addLayer(h8Layer);
       } else if (mode === "points") {
         map.addLayer(pointsLayer);
       } else {
         if (z < 12) {
-          map.addLayer(h6BaseLayer);
-          map.addLayer(h6DataLayer);
+          map.addLayer(h6Layer);
         } else if (z >= 12 && z < 14) {
-          map.addLayer(h6BaseLayer);
-          map.addLayer(h6DataLayer);
-          map.addLayer(h8BaseLayer);
-          map.addLayer(h8DataLayer);
+          map.addLayer(h6Layer);
+          map.addLayer(h8Layer);
         } else {
-          map.addLayer(h6BaseLayer);
-          map.addLayer(h6DataLayer);
-          map.addLayer(h8BaseLayer);
-          map.addLayer(h8DataLayer);
+          map.addLayer(h6Layer);
+          map.addLayer(h8Layer);
           map.addLayer(pointsLayer);
         }
       }
@@ -621,30 +505,26 @@
     function updateStats() {
       document.getElementById("statSoportes").textContent = currentData.length;
 
-      const polygon = getVisiblePolygon();
       const mode = document.getElementById("resolutionMode").value;
       const z = map.getZoom();
-
       let hexCount = 0;
 
       if (mode === "h6") {
-        hexCount = h3.polygonToCells(polygon, 6).length;
+        hexCount = h6Resumen.length;
       } else if (mode === "h8") {
-        hexCount = h3.polygonToCells(polygon, 8).length;
+        hexCount = h8Resumen.length;
       } else if (mode === "auto" && z < 12) {
-        hexCount = h3.polygonToCells(polygon, 6).length;
-      } else if (mode === "auto" && z >= 12 && z < 14) {
-        hexCount = h3.polygonToCells(polygon, 6).length + h3.polygonToCells(polygon, 8).length;
-      } else if (mode === "auto" && z >= 14) {
-        hexCount = h3.polygonToCells(polygon, 6).length + h3.polygonToCells(polygon, 8).length;
+        hexCount = h6Resumen.length;
+      } else if (mode === "auto" && z >= 12) {
+        hexCount = h6Resumen.length + h8Resumen.length;
       }
 
       document.getElementById("statHex").textContent = hexCount;
     }
 
     function renderAll() {
-      renderGrid(h6BaseLayer, h6DataLayer, 6, "H6");
-      renderGrid(h8BaseLayer, h8DataLayer, 8, "H8");
+      renderHexLayer(h6Layer, h6Resumen, "h6", "H6", "#1e3a8a", 2.2, 0.16);
+      renderHexLayer(h8Layer, h8Resumen, "h8", "H8", "#111827", 1.2, 0.12);
       renderPoints(currentData);
       applyZoomMode();
     }
@@ -661,22 +541,29 @@
         return okText && okComuna && okCategoria;
       });
 
+      // recalcular resumen SOLO para lo filtrado
+      const h6Map = {};
+      const h8Map = {};
+
+      currentData.forEach(item => {
+        h6Map[item.h6] = (h6Map[item.h6] || 0) + 1;
+        h8Map[item.h8] = (h8Map[item.h8] || 0) + 1;
+      });
+
+      h6Resumen = Object.entries(h6Map).map(([h6, soportes]) => ({ h6, soportes }));
+      h8Resumen = Object.entries(h8Map).map(([h8, soportes]) => ({ h8, soportes }));
+
       renderAll();
     }
 
     function initLayerControl() {
-      if (layerControl) {
-        map.removeControl(layerControl);
-      }
+      if (layerControl) map.removeControl(layerControl);
 
       const overlays = {};
       if (comunasLayer) overlays["🏙 Comunas"] = comunasLayer;
       if (comunaSeleccionadaLayer) overlays["⭐ Comuna seleccionada"] = comunaSeleccionadaLayer;
-
-      overlays["🔷 Malla base H6"] = h6BaseLayer;
-      overlays["🟦 H6 con datos"] = h6DataLayer;
-      overlays["🔹 Malla base H8"] = h8BaseLayer;
-      overlays["🟪 H8 con datos"] = h8DataLayer;
+      overlays["🔷 H6"] = h6Layer;
+      overlays["🔹 H8"] = h8Layer;
       overlays["📍 Soportes"] = pointsLayer;
 
       layerControl = L.control.layers({}, overlays, {
@@ -696,12 +583,10 @@
           map.fitBounds(comunaSeleccionadaLayer.getBounds(), { padding: [20, 20] });
         } catch (e) {}
       }
-
-      initLayerControl();
     });
 
     document.getElementById("categoriaFilter").addEventListener("change", filterData);
-    document.getElementById("resolutionMode").addEventListener("change", renderAll);
+    document.getElementById("resolutionMode").addEventListener("change", applyZoomMode);
 
     document.getElementById("resetBtn").addEventListener("click", () => {
       map.setView([-33.45, -70.65], 11);
@@ -710,13 +595,21 @@
       document.getElementById("categoriaFilter").value = "";
       document.getElementById("resolutionMode").value = "auto";
       currentData = [...allData];
+
+      // restaurar resumen original desde allData
+      const h6Map = {};
+      const h8Map = {};
+      allData.forEach(item => {
+        h6Map[item.h6] = (h6Map[item.h6] || 0) + 1;
+        h8Map[item.h8] = (h8Map[item.h8] || 0) + 1;
+      });
+
+      h6Resumen = Object.entries(h6Map).map(([h6, soportes]) => ({ h6, soportes }));
+      h8Resumen = Object.entries(h8Map).map(([h8, soportes]) => ({ h8, soportes }));
+
       resaltarComuna("");
       renderAll();
-      initLayerControl();
     });
-
-    map.on("zoomend", renderAll);
-    map.on("moveend", renderAll);
 
     const legend = L.control({ position: "bottomright" });
 
@@ -725,9 +618,10 @@
       div.innerHTML = `
         <b>Densidad</b><br>
         <span class="dot" style="background:#dbeafe"></span>Baja<br>
-        <span class="dot" style="background:#94a3b8"></span>Media<br>
-        <span class="dot" style="background:#6366f1"></span>Alta<br>
-        <span class="dot" style="background:#7e22ce"></span>Muy alta<br><br>
+        <span class="dot" style="background:#86efac"></span>Media<br>
+        <span class="dot" style="background:#f59e0b"></span>Alta<br>
+        <span class="dot" style="background:#6366f1"></span>Muy alta<br>
+        <span class="dot" style="background:#7e22ce"></span>Extrema<br><br>
 
         <b>Lectura territorial</b><br>
         🔷 H6 = macrozona<br>
