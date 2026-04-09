@@ -1,0 +1,665 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Santiago"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.69,
+              -33.47
+            ],
+            [
+              -70.62,
+              -33.47
+            ],
+            [
+              -70.62,
+              -33.43
+            ],
+            [
+              -70.69,
+              -33.43
+            ],
+            [
+              -70.69,
+              -33.47
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Providencia"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.64,
+              -33.445
+            ],
+            [
+              -70.59,
+              -33.445
+            ],
+            [
+              -70.59,
+              -33.405
+            ],
+            [
+              -70.64,
+              -33.405
+            ],
+            [
+              -70.64,
+              -33.445
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Las Condes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.61,
+              -33.43
+            ],
+            [
+              -70.5,
+              -33.43
+            ],
+            [
+              -70.5,
+              -33.37
+            ],
+            [
+              -70.61,
+              -33.37
+            ],
+            [
+              -70.61,
+              -33.43
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Vitacura"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.62,
+              -33.4
+            ],
+            [
+              -70.55,
+              -33.4
+            ],
+            [
+              -70.55,
+              -33.35
+            ],
+            [
+              -70.62,
+              -33.35
+            ],
+            [
+              -70.62,
+              -33.4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Recoleta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.68,
+              -33.43
+            ],
+            [
+              -70.62,
+              -33.43
+            ],
+            [
+              -70.62,
+              -33.39
+            ],
+            [
+              -70.68,
+              -33.39
+            ],
+            [
+              -70.68,
+              -33.43
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Independencia"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.7,
+              -33.43
+            ],
+            [
+              -70.66,
+              -33.43
+            ],
+            [
+              -70.66,
+              -33.39
+            ],
+            [
+              -70.7,
+              -33.39
+            ],
+            [
+              -70.7,
+              -33.43
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Estacion Central"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.73,
+              -33.47
+            ],
+            [
+              -70.68,
+              -33.47
+            ],
+            [
+              -70.68,
+              -33.43
+            ],
+            [
+              -70.73,
+              -33.43
+            ],
+            [
+              -70.73,
+              -33.47
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Maipu"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.8,
+              -33.55
+            ],
+            [
+              -70.7,
+              -33.55
+            ],
+            [
+              -70.7,
+              -33.47
+            ],
+            [
+              -70.8,
+              -33.47
+            ],
+            [
+              -70.8,
+              -33.55
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Florida"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.61,
+              -33.57
+            ],
+            [
+              -70.52,
+              -33.57
+            ],
+            [
+              -70.52,
+              -33.49
+            ],
+            [
+              -70.61,
+              -33.49
+            ],
+            [
+              -70.61,
+              -33.57
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Nunoa"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.63,
+              -33.49
+            ],
+            [
+              -70.57,
+              -33.49
+            ],
+            [
+              -70.57,
+              -33.44
+            ],
+            [
+              -70.63,
+              -33.44
+            ],
+            [
+              -70.63,
+              -33.49
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "La Reina"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.58,
+              -33.47
+            ],
+            [
+              -70.52,
+              -33.47
+            ],
+            [
+              -70.52,
+              -33.42
+            ],
+            [
+              -70.58,
+              -33.42
+            ],
+            [
+              -70.58,
+              -33.47
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Penalolen"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.58,
+              -33.54
+            ],
+            [
+              -70.5,
+              -33.54
+            ],
+            [
+              -70.5,
+              -33.46
+            ],
+            [
+              -70.58,
+              -33.46
+            ],
+            [
+              -70.58,
+              -33.54
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Macul"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.62,
+              -33.53
+            ],
+            [
+              -70.57,
+              -33.53
+            ],
+            [
+              -70.57,
+              -33.48
+            ],
+            [
+              -70.62,
+              -33.48
+            ],
+            [
+              -70.62,
+              -33.53
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San Miguel"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.68,
+              -33.52
+            ],
+            [
+              -70.62,
+              -33.52
+            ],
+            [
+              -70.62,
+              -33.47
+            ],
+            [
+              -70.68,
+              -33.47
+            ],
+            [
+              -70.68,
+              -33.52
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "San Joaquin"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.67,
+              -33.55
+            ],
+            [
+              -70.61,
+              -33.55
+            ],
+            [
+              -70.61,
+              -33.5
+            ],
+            [
+              -70.67,
+              -33.5
+            ],
+            [
+              -70.67,
+              -33.55
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Lo Barnechea"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.56,
+              -33.39
+            ],
+            [
+              -70.45,
+              -33.39
+            ],
+            [
+              -70.45,
+              -33.3
+            ],
+            [
+              -70.56,
+              -33.3
+            ],
+            [
+              -70.56,
+              -33.39
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Huechuraba"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.7,
+              -33.39
+            ],
+            [
+              -70.61,
+              -33.39
+            ],
+            [
+              -70.61,
+              -33.33
+            ],
+            [
+              -70.7,
+              -33.33
+            ],
+            [
+              -70.7,
+              -33.39
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Quilicura"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.8,
+              -33.42
+            ],
+            [
+              -70.69,
+              -33.42
+            ],
+            [
+              -70.69,
+              -33.33
+            ],
+            [
+              -70.8,
+              -33.33
+            ],
+            [
+              -70.8,
+              -33.42
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Renca"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.76,
+              -33.45
+            ],
+            [
+              -70.69,
+              -33.45
+            ],
+            [
+              -70.69,
+              -33.39
+            ],
+            [
+              -70.76,
+              -33.39
+            ],
+            [
+              -70.76,
+              -33.45
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "comuna": "Pudahuel"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -70.86,
+              -33.5
+            ],
+            [
+              -70.73,
+              -33.5
+            ],
+            [
+              -70.73,
+              -33.4
+            ],
+            [
+              -70.86,
+              -33.4
+            ],
+            [
+              -70.86,
+              -33.5
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
