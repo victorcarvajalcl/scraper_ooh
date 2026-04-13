@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SCRAPER_OOH - Análisis Comercial PRO</title>
+<title>SCRAPER_OOH - Análisis PRO</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
@@ -30,21 +30,19 @@ input,select,button{width:100%;padding:10px;margin-bottom:10px;border-radius:10p
 <div class="sidebar">
 <h2>SCRAPER_OOH PRO</h2>
 
-<!-- RESUMEN -->
 <div class="panel">
-<h3>Resumen</h3>
-<div class="stat">Soportes: <b id="totalSoportes">0</b></div>
-<div class="stat">Comunas: <b id="totalComunas">0</b></div>
-<div class="stat">Score máx: <b id="topScore">0</b></div>
+<h3>Resumen Análisis</h3>
+<div class="stat">Soportes filtrados: <b id="totalSoportes">0</b></div>
+<div class="stat">Comunas activas: <b id="totalComunas">0</b></div>
+<div class="stat">Score promedio: <b id="avgScore">0</b></div>
+<div class="stat">Score máximo: <b id="topScore">0</b></div>
 </div>
 
-<!-- INSIGHT -->
 <div class="panel">
 <h3>Insight</h3>
 <div id="insight"></div>
 </div>
 
-<!-- FILTROS -->
 <div class="panel">
 <h3>Filtros</h3>
 <input id="search" placeholder="Buscar soporte">
@@ -53,7 +51,6 @@ input,select,button{width:100%;padding:10px;margin-bottom:10px;border-radius:10p
 <button id="reset">Reset</button>
 </div>
 
-<!-- CAPAS -->
 <div class="panel">
 <h3>Capas</h3>
 <div class="chips">
@@ -64,7 +61,6 @@ input,select,button{width:100%;padding:10px;margin-bottom:10px;border-radius:10p
 </div>
 </div>
 
-<!-- RANKING -->
 <div class="panel">
 <h3>Top zonas</h3>
 <div id="ranking"></div>
@@ -132,7 +128,6 @@ document.getElementById('categoria').value='';
 render();
 };
 
-// chips capas
 Array.from(document.querySelectorAll('.chip')).forEach(chip=>{
 chip.onclick=()=>{
 const k=chip.dataset.layer;
@@ -158,7 +153,14 @@ capaPts=L.markerClusterGroup();
 if(layersState.soportes){
 filtrados.forEach(p=>{
 const m=L.circleMarker([p.lat,p.lng],{pane:'points',radius:5,color:'#fff',fillColor:'#ef4444',fillOpacity:1});
-m.bindPopup(`<b>${p.nombre}</b><br>${p.comuna}`);
+
+m.bindPopup(`
+<b>${p.nombre||'Soporte'}</b><br>
+Dirección: ${p.direccion||'-'}<br>
+Comuna: ${p.comuna||'-'}<br>
+Categoría: ${p.categoria||'-'}
+`);
+
 capaPts.addLayer(m);
 });
 map.addLayer(capaPts);
@@ -180,12 +182,22 @@ let feats=[];
 
 if(layersState.h6 && h6){
 feats=h6.features;
-capaH6=L.geoJSON(h6,{pane:'hex',style:f=>({color:'#2563eb',fillOpacity:0.3})}).addTo(map);
+capaH6=L.geoJSON(h6,{pane:'hex',style:f=>({color:'#2563eb',fillOpacity:0.3}),
+onEachFeature:(f,l)=>{
+const s=score(f.properties.soportes||0);
+l.bindPopup(`H6<br>Soportes:${f.properties.soportes||0}<br>Score:${s}`);
+}
+}).addTo(map);
 }
 
 if(layersState.h8 && h8){
 feats=h8.features;
-capaH8=L.geoJSON(h8,{pane:'hex',style:f=>({color:'#9333ea',fillOpacity:0.25})}).addTo(map);
+capaH8=L.geoJSON(h8,{pane:'hex',style:f=>({color:'#9333ea',fillOpacity:0.25}),
+onEachFeature:(f,l)=>{
+const s=score(f.properties.soportes||0);
+l.bindPopup(`H8<br>Soportes:${f.properties.soportes||0}<br>Score:${s}`);
+}
+}).addTo(map);
 }
 
 const top=feats.map(f=>({...f,s:score(f.properties.soportes||0)})).sort((a,b)=>b.s-a.s).slice(0,5);
@@ -194,7 +206,10 @@ const div=document.getElementById('ranking');div.innerHTML='';
 top.forEach((f,i)=>div.innerHTML+=`<div class="ranking-item">#${i+1} Score ${f.s}</div>`);
 
 const max=top[0]?.s||0;
+const avg = top.length ? Math.round(top.reduce((a,b)=>a+b.s,0)/top.length) : 0;
+
 document.getElementById('topScore').innerText=max;
+document.getElementById('avgScore').innerText=avg;
 document.getElementById('totalSoportes').innerText=filtrados.length;
 document.getElementById('totalComunas').innerText=new Set(filtrados.map(s=>s.comuna)).size;
 document.getElementById('insight').innerText=insight(max);
